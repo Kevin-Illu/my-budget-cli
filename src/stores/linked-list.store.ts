@@ -16,7 +16,7 @@ class LinkedList<T> implements Store<T> {
     this.head = null;
   }
 
-  add(data: T) {
+  add(data: T): boolean {
     const newNode = new TNode(data);
 
     if (this.head === null) {
@@ -30,6 +30,7 @@ class LinkedList<T> implements Store<T> {
     }
 
     this.count++;
+    return true;
   }
 
   getAll(): T[] {

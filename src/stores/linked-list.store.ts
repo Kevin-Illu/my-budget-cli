@@ -1,3 +1,5 @@
+import { cpus } from "os";
+
 class TNode<T> {
   data: T;
   next: TNode<T> | null;
@@ -71,5 +73,35 @@ class LinkedList<T> {
     }
 
     return false;
+  }
+
+  deleteAt(index: number): T | undefined {
+    if (index < 0 || index >= this.count || !this.head) return undefined;
+
+    if (index === 0) {
+      const removedData = this.head.data;
+      this.head = this.head.next;
+      this.count--;
+      return removedData;
+    }
+
+    let current = this.head;
+    let prev: TNode<T> | null = null;
+    let currentIndex = 0;
+
+    while (current && currentIndex !== index) {
+      prev = current;
+      current = current.next;
+      currentIndex++;
+    }
+
+    if (current && prev) {
+      const removedData = current.data;
+      prev.next = current.next;
+      this.count--;
+      return removedData;
+    }
+
+    return undefined;
   }
 }

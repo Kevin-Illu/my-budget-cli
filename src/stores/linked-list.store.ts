@@ -44,4 +44,32 @@ class LinkedList<T> {
 
     return items;
   }
+
+  delete(item: T): boolean {
+    if (!this.head) return false;
+
+    if (this.head.data === item) {
+      this.head = this.head.next;
+      this.count--;
+      return true;
+    }
+
+    let current = this.head;
+    let prev: TNode<T> | null = null;
+
+    while (current) {
+      if (current.data === item) {
+        if (prev) {
+          prev.next = current.next;
+        }
+        this.count--;
+        return true;
+      }
+
+      prev = current;
+      current = current.next;
+    }
+
+    return false;
+  }
 }

@@ -44,10 +44,10 @@ class LinkedList<T> {
     return items;
   }
 
-  delete(item: T, compare: (i: T) => boolean): boolean {
+  delete(compare: (i: T) => boolean): boolean {
     if (!this.head) return false;
 
-    if (this.head.data === item) {
+    if (compare(this.head.data)) {
       this.head = this.head.next;
       this.count--;
       return true;

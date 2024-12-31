@@ -21,15 +21,14 @@ class LinkedList<T> {
 
     if (this.head === null) {
       this.head = newNode;
-      return;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
 
-    let current = this.head;
-    while (current.next !== null) {
-      current = current.next;
-    }
-
-    current.next = newNode;
     this.count++;
   }
 
@@ -45,7 +44,7 @@ class LinkedList<T> {
     return items;
   }
 
-  delete(item: T): boolean {
+  delete(item: T, compare: (i: T) => boolean): boolean {
     if (!this.head) return false;
 
     if (this.head.data === item) {
@@ -57,17 +56,18 @@ class LinkedList<T> {
     let current = this.head;
     let prev: TNode<T> | null = null;
 
-    while (current) {
-      if (current.data === item) {
-        if (prev) {
-          prev.next = current.next;
-        }
-        this.count--;
-        return true;
-      }
-
+    while (current && !compare(current.data)) {
       prev = current;
       current = current.next;
+    }
+
+    if (current) {
+      if (prev) {
+        prev.next = current.next;
+      }
+
+      this.count--;
+      return true;
     }
 
     return false;
@@ -103,10 +103,10 @@ class LinkedList<T> {
     return undefined;
   }
 
-  find(item: T): T | undefined {
+  find(compare: (i: T) => boolean): T | undefined {
     let current = this.head;
     while (current) {
-      if (current.data === item) {
+      if (compare(current.data)) {
         return current.data;
       }
       current = current.next;

@@ -134,3 +134,5 @@ class LinkedList<T> implements Store<T> {
     return this.count;
   }
 }
+
+export default LinkedList;

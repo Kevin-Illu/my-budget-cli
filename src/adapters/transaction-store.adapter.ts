@@ -11,6 +11,7 @@ class TransactionStore implements StoreAdapter<TransactionEntity> {
         const result = fn();
         resolve(result);
       } catch (error) {
+        console.error("TransactionStore Error:", error);
         reject(error);
       }
     });
@@ -20,11 +21,13 @@ class TransactionStore implements StoreAdapter<TransactionEntity> {
     return this.asPromise(() => this.store.add(t));
   }
 
-  update(t: TransactionEntity): Promise<boolean> {
-    return this.asPromise(() => this.store.update((i) => i.id === t.id, t));
+  update(newTData: TransactionEntity): Promise<boolean> {
+    return this.asPromise(() =>
+      this.store.update((i) => i.id === newTData.id, newTData),
+    );
   }
 
-  findById(id: number): Promise<TransactionEntity | undefined> {
+  findById(id: string): Promise<TransactionEntity | undefined> {
     return this.asPromise(() => this.store.find((i) => i.id === id));
   }
 
@@ -34,6 +37,10 @@ class TransactionStore implements StoreAdapter<TransactionEntity> {
 
   size(): Promise<number> {
     return this.asPromise(() => this.store.size());
+  }
+
+  deleteById(id: string): Promise<boolean> {
+    return this.asPromise(() => this.store.delete((i) => i.id === id));
   }
 }
 

@@ -12,14 +12,15 @@ interface Store<T> {
 interface StoreAdapter<T> {
   add(t: TransactionEntity): Promise<boolean>;
   getAll(): Promise<TransactionEntity[]>;
-  findById(id: number): Promise<TransactionEntity | undefined>;
+  findById(id: string): Promise<TransactionEntity | undefined>;
   update(t: TransactionEntity): Promise<boolean>;
   size(): Promise<number>;
+  deleteById(id: string): Promise<boolean>;
 }
 
 // Core like
 interface TransactionEntity {
-  id: number;
+  id: string;
   amount: number;
   category: string;
   date: Date;

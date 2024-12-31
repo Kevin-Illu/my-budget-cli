@@ -8,7 +8,7 @@ class TNode<T> {
   }
 }
 
-class LinkedList<T> {
+class LinkedList<T> implements Store<T> {
   head: TNode<T> | null;
   count: number = 0;
 
@@ -101,6 +101,21 @@ class LinkedList<T> {
     }
 
     return undefined;
+  }
+
+  update(compare: (i: T) => boolean, newValue: T): boolean {
+    if (!this.head) return false;
+
+    let current = this.head;
+    while (current) {
+      if (compare(current.data)) {
+        current.data = newValue;
+        return true;
+      }
+      current = current.next;
+    }
+
+    return false;
   }
 
   find(compare: (i: T) => boolean): T | undefined {

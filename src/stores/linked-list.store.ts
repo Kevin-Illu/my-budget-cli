@@ -1,5 +1,3 @@
-import { cpus } from "os";
-
 class TNode<T> {
   data: T;
   next: TNode<T> | null;
@@ -103,5 +101,20 @@ class LinkedList<T> {
     }
 
     return undefined;
+  }
+
+  find(item: T): T | undefined {
+    let current = this.head;
+    while (current) {
+      if (current.data === item) {
+        return current.data;
+      }
+      current = current.next;
+    }
+    return undefined;
+  }
+
+  size(): number {
+    return this.count;
   }
 }

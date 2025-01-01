@@ -18,7 +18,7 @@ class TransactionStore implements StoreAdapter<TransactionEntity> {
   }
 
   add(t: TransactionEntity): Promise<boolean> {
-    return this.asPromise(() => this.store.add(t));
+    return this.asPromise(() => this.store.add(t)).catch(() => false);
   }
 
   update(newTData: TransactionEntity): Promise<boolean> {

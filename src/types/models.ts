@@ -23,6 +23,7 @@ interface TransactionEntity {
   id: string;
   amount: number;
   category: string;
+  pay_each: Date;
   date: Date;
 }
 

@@ -1,5 +1,5 @@
 class TransactionFactory {
-  constructor(private uuidGenerator: () => string) {}
+  constructor(private uuidGenerator: () => string) { }
 
   private validateTransaction(t: UserTransaction): string[] {
     const errors: string[] = [];
@@ -32,6 +32,7 @@ class TransactionFactory {
       amount: t.amount,
       category: t.category,
       date: new Date(),
+      pay_each: t.pay_each,
     };
   }
 }

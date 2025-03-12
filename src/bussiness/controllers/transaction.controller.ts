@@ -33,7 +33,7 @@ class TransactionController {
     },
   };
 
-  constructor(private transactionService: TransactionService) {}
+  constructor(private transactionService: TransactionService) { }
 
   async startBudgetPresenter() {
     // TODO: why this sometimes crash?
@@ -59,10 +59,10 @@ class TransactionController {
     });
 
     const category = await input({ message: "enter the category" });
-    this.transactionService.createTransaction({
-      amount: Number(amount),
-      category,
-    });
+    // this.transactionService.createTransaction({
+    //   amount: Number(amount),
+    //   category,
+    // });
   }
 
   async handlingActionChoice() {

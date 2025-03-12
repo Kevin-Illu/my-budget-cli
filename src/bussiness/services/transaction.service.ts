@@ -1,5 +1,5 @@
-import TransactionStore from "../bussiness/adapters/transaction-store.adapter";
-import TransactionFactory from "../bussiness/factories/transaction.factory";
+import TransactionStore from "../adapters/transaction-store.adapter";
+import TransactionFactory from "../factories/transaction.factory";
 
 export class TransactionService {
   constructor(

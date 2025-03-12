@@ -8,23 +8,25 @@ type PrimitiveValue = string | number | boolean | Date | ObjectValue | null | un
 // validator for this kind of object is not implemented yet. Maybe in the future :)
 type ObjectValue = { [key: string]: unknown };
 
-
 // The Validator Function definition is a function that receives a value and returns a value
 // It is used to validate the values of the entities
-// but i'm not sure if this can trhow an error and if this should return an especific value type
+export type ValidatorError = {
+    messsage: string;
+    error: boolean;
+}
 
-// TODO: check if this should return an specific value type
-// TODO: check if this can throw an error
-type EntityValidatorFunction<P, R> = (value: P) => R;
+export type EntityValidatorFunction = (value: unknown) => ValidatorError;
 
-type EntitySchemaValidatorValue =
+export type EntityValidatorSchemaValue =
     PrimitiveValue |
     [
         PrimitiveValue | PrimitiveValue[],
-        undefined | null | EntityValidatorFunction<unknown, unknown> | EntityValidatorFunction<unknown, unknown>[]
+        undefined | null | EntityValidatorFunction | EntityValidatorFunction[]
     ]
 
-// The entity schema validator structure
-export type EntitySchemaValidator = {
-    [key: string]: EntitySchemaValidatorValue
+// Angular's like schema for the entity validator
+// the schema is used to validate the values of the entities
+// TODO: support nested objects in the schema ;)
+export type EntityValidatorSchema = {
+    [key: string]: EntityValidatorSchemaValue
 }

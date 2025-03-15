@@ -1,3 +1,7 @@
+import { UserTransaction } from "../../types/bussiness";
+import { Expense } from "../../types/entities";
+
+
 class TransactionFactory {
   constructor(private uuidGenerator: () => string) { }
 
@@ -20,7 +24,7 @@ class TransactionFactory {
   }
 
   // TODO: verify if throwing an error is an aceptable solution D;
-  create(t: UserTransaction): TransactionEntity {
+  create(t: UserTransaction): Expense {
     const errors = this.validateTransaction(t);
 
     if (errors.length > 0) {

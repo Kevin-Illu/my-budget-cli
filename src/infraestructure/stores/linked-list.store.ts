@@ -1,3 +1,6 @@
+import { Store } from "../../types/infraestructure";
+
+
 class TNode<T> {
   data: T;
   next: TNode<T> | null;

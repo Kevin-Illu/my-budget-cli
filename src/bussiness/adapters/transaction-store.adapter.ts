@@ -1,7 +1,12 @@
-class TransactionStore implements StoreAdapter<TransactionEntity> {
-  store: Store<TransactionEntity>;
+import { StoreAdapter } from "../../types/bussiness";
+import { Expense } from "../../types/entities";
+import { Store } from "../../types/infraestructure";
 
-  constructor(store: Store<TransactionEntity>) {
+
+class TransactionStore implements StoreAdapter<Expense> {
+  store: Store<Expense>;
+
+  constructor(store: Store<Expense>) {
     this.store = store;
   }
 
@@ -17,21 +22,21 @@ class TransactionStore implements StoreAdapter<TransactionEntity> {
     });
   }
 
-  add(t: TransactionEntity): Promise<boolean> {
+  add(t: Expense): Promise<boolean> {
     return this.asPromise(() => this.store.add(t)).catch(() => false);
   }
 
-  update(newTData: TransactionEntity): Promise<boolean> {
+  update(newTData: Expense): Promise<boolean> {
     return this.asPromise(() =>
       this.store.update((i) => i.id === newTData.id, newTData),
     );
   }
 
-  findById(id: string): Promise<TransactionEntity | undefined> {
+  findById(id: string): Promise<Expense | undefined> {
     return this.asPromise(() => this.store.find((i) => i.id === id));
   }
 
-  getAll(): Promise<TransactionEntity[]> {
+  getAll(): Promise<Expense[]> {
     return this.asPromise(() => this.store.getAll());
   }
 

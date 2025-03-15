@@ -9,6 +9,7 @@
 import { input } from "@inquirer/prompts";
 import { TransactionService } from "../services/transaction.service";
 import { select, Separator } from "@inquirer/prompts";
+import { Expense } from "../../types/entities";
 
 class TransactionController {
   actions = {
@@ -125,7 +126,7 @@ class TransactionController {
       validate: (amount) => !isNaN(Number(amount)),
     });
 
-    const newTransaction: TransactionEntity = {
+    const newTransaction: Expense = {
       ...JSON.parse(transactionSelected),
       amount,
     };
@@ -148,7 +149,7 @@ class TransactionController {
       description: t.date.toString(),
     }));
 
-    const transactionSelected: TransactionEntity = await select({
+    const transactionSelected: Expense = await select({
       message: "select the transaction to edit",
       choices: options,
     }).then((t) => JSON.parse(t));

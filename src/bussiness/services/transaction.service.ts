@@ -1,3 +1,5 @@
+import { UserTransaction } from "../../types/bussiness";
+import { Expense } from "../../types/entities";
 import TransactionStore from "../adapters/transaction-store.adapter";
 import TransactionFactory from "../factories/transaction.factory";
 
@@ -5,7 +7,7 @@ export class TransactionService {
   constructor(
     private transactionStore: TransactionStore,
     private transactionFactory: TransactionFactory,
-  ) {}
+  ) { }
 
   createTransaction(t: UserTransaction): void {
     // TODO: refactor this code, must be a priority.
@@ -25,14 +27,14 @@ export class TransactionService {
     }
   }
 
-  editCategory(editedTransaction: TransactionEntity): void {
+  editCategory(editedTransaction: Expense): void {
     this.transactionStore
       .update(editedTransaction)
       .then(console.log)
       .catch(console.log);
   }
 
-  editAmount(editedTransaction: TransactionEntity): void {
+  editAmount(editedTransaction: Expense): void {
     this.transactionStore
       .update(editedTransaction)
       .then((r) => {
@@ -49,7 +51,7 @@ export class TransactionService {
     this.transactionStore.deleteById(id).then(console.log).catch(console.log);
   }
 
-  getAllTransactions(): Promise<TransactionEntity[]> {
+  getAllTransactions(): Promise<Expense[]> {
     return this.transactionStore.getAll();
   }
 

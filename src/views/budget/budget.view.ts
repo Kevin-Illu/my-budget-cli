@@ -1,47 +1,59 @@
 import { select, Separator } from "@inquirer/prompts";
-import { ApplicationTypes } from "@myTypes/bussiness";
+import { ApplicationTypes } from "@budgetTypes/bussiness";
+import { BussinesLogic } from "../../consts";
 
 export default class BudgetView {
     private userOptions = [
         {
-            name: "Create a new transaction",
+            name: "Create a new expense",
             value: "add",
             description: "create a new transaction",
         },
         {
-            name: "Edit the amount of transaction",
+            name: "Edit the amount of the expense",
             value: "edit",
             description: "choose a transaction to edit",
         },
         {
-            name: "Delete transaction",
+            name: "Delete expense",
             value: "delete",
             description: "delete an especifyc transactions",
         },
         {
-            name: "List of transactions",
+            name: "List of expenses",
             value: "list",
             description: "display all the transactions",
         }
     ]
 
+    private aplicationOptions = [
+        {
+            name: "exit",
+            value: "exit",
+            description: "exit to the application ;)",
+        }
+    ]
+
     private selectableOptions = select({
-        message: "Your budget",
+        message: "Your expenses",
         choices: [
             ...this.userOptions,
             new Separator(),
-            {
-                name: "exit",
-                value: "exit",
-                description: "exit",
-            }
+            ...this.aplicationOptions
         ]
     })
 
-    async handlingActionChoice(): Promise<ApplicationTypes.ActionTypes> {
-        // TODO: handle the Ctrl+C event to exit the application
-        // or just async await errors
-        const answer = await this.selectableOptions as ApplicationTypes.ActionTypes;
-        return answer;
+    async getUserActionType(): Promise<ApplicationTypes.ActionType> {
+        try {
+            const answer = await this.selectableOptions as ApplicationTypes.ActionType;
+            return answer;
+        } catch (error) {
+            console.error(error);
+            return BussinesLogic.USER_ACTIONS.EXIT;
+        }
+    }
+
+    sayGoodBye() {
+        console.log("Good Bye! ;)");
     }
 }

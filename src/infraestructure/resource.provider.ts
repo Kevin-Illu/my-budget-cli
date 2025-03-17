@@ -5,7 +5,7 @@ import { Store } from "../types/infraestructure";
 
 export default class ResourceProvider {
     static errorManager: ErrorHandlerManager;
-    static store: Store<unknown>;
+    static store: Store.SyncStore<unknown>;
 
     static {
         this.errorManager = new ErrorHandlerManager();
@@ -17,7 +17,7 @@ export default class ResourceProvider {
         return this.errorManager;
     }
 
-    static getStore<T>(): Store<T> {
-        return this.store as Store<T>;
+    static getStore<T>(): Store.SyncStore<T> {
+        return this.store as Store.SyncStore<T>;
     }
 }

@@ -1,4 +1,4 @@
-import { Store } from "../../types/infraestructure";
+import { Store } from "@budgetTypes/infraestructure";
 
 
 class TNode<T> {
@@ -11,7 +11,7 @@ class TNode<T> {
   }
 }
 
-class LinkedList<T> implements Store<T> {
+class LinkedList<T> implements Store.SyncStore<T> {
   head: TNode<T> | null;
   count: number = 0;
 

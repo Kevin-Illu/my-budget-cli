@@ -1,5 +1,5 @@
-import { UserTransaction } from "../../types/bussiness";
-import { Expense } from "../../types/entities";
+import { UserTransaction } from "@budgetTypes/bussiness";
+import { Expense } from "@budgetTypes/entities";
 import TransactionStore from "../adapters/transaction-store.adapter";
 import TransactionFactory from "../factories/transaction.factory";
 
@@ -56,6 +56,6 @@ export class TransactionService {
   }
 
   countTransactions(): Promise<number> {
-    return this.transactionStore.size();
+    return this.transactionStore.countAll();
   }
 }

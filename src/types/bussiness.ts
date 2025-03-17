@@ -16,12 +16,12 @@ export namespace ApplicationTypes {
     /*
     * Actions the the user can do in the application
     */
-    export type ActionTypes =
+    export type ActionType =
         ApplicationActionType
         | ExpensesActionType;
 
     export type Action<P> = {
-        type: ActionTypes,
+        type: ActionType,
         payload?: P
     }
 }

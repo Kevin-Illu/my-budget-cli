@@ -1,12 +1,11 @@
-import { StoreAdapter } from "../../types/bussiness";
-import { Expense } from "../../types/entities";
-import { Store } from "../../types/infraestructure";
+import { Expense } from "@budgetTypes/entities";
+import { Store } from "@budgetTypes/infraestructure";
 
 
-class TransactionStore implements StoreAdapter<Expense> {
-  store: Store<Expense>;
+class TransactionStore implements Store.AsyncStore<Expense> {
+  store: Store.SyncStore<Expense>;
 
-  constructor(store: Store<Expense>) {
+  constructor(store: Store.SyncStore<Expense>) {
     this.store = store;
   }
 
@@ -40,7 +39,7 @@ class TransactionStore implements StoreAdapter<Expense> {
     return this.asPromise(() => this.store.getAll());
   }
 
-  size(): Promise<number> {
+  countAll(): Promise<number> {
     return this.asPromise(() => this.store.size());
   }
 

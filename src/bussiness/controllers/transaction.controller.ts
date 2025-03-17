@@ -9,7 +9,7 @@
 import { input } from "@inquirer/prompts";
 import { TransactionService } from "../services/transaction.service";
 import { select, Separator } from "@inquirer/prompts";
-import { Expense } from "../../types/entities";
+import { Expense } from "@budgetTypes/entities";
 
 class TransactionController {
   actions = {
@@ -59,7 +59,7 @@ class TransactionController {
       validate: (amount) => !isNaN(Number(amount)),
     });
 
-    const category = await input({ message: "enter the category" });
+    const caztegory = await input({ message: "enter the category" });
     // this.transactionService.createTransaction({
     //   amount: Number(amount),
     //   category,

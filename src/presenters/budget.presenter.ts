@@ -11,7 +11,6 @@ export default class BudgetPresenter {
         let actionType: ApplicationTypes.ActionType;
 
         do {
-            console.log('ask user action');
             actionType = await this.view.getUserActionType();
 
             if (actionType === BussinesLogic.USER_ACTIONS.EXIT) {
@@ -19,7 +18,6 @@ export default class BudgetPresenter {
                 break;
             }
 
-            console.log('ask again?');
         } while (true);
     }
 }

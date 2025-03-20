@@ -34,21 +34,18 @@ export default class BudgetView {
         }
     ]
 
-    private selectableOptions = select({
-        message: "Your expenses",
-        choices: [
-            ...this.userOptions,
-            new Separator(),
-            ...this.aplicationOptions
-        ]
-    })
-
     async getUserActionType(): Promise<ApplicationTypes.ActionType> {
         try {
-            const answer = await this.selectableOptions as ApplicationTypes.ActionType;
+            const answer = await select({
+                message: "Your expenses",
+                choices: [
+                    ...this.userOptions,
+                    new Separator(),
+                    ...this.aplicationOptions
+                ]
+            }) as ApplicationTypes.ActionType;
             return answer;
         } catch (error) {
-            console.error(error);
             return BussinesLogic.USER_ACTIONS.EXIT;
         }
     }

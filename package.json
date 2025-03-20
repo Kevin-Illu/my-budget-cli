@@ -2,7 +2,7 @@
   "scripts": {
     "build": "tsc --build",
     "watch": "tsc --watch",
-    "start": "node --watch ./dist/index.js"
+    "start": "tsc && node --watch ./dist/index.js"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

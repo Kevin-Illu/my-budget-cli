@@ -1,3 +1,4 @@
+import { ApplicationTypes } from "@budgetTypes/bussiness";
 import { BussinesLogic } from "../consts";
 import BudgetView from "../views/budget/budget.view";
 
@@ -7,10 +8,18 @@ export default class BudgetPresenter {
     ) { }
 
     async startBudgetPresenter() {
-        const actionType = await this.view.getUserActionType();
+        let actionType: ApplicationTypes.ActionType;
 
-        if (actionType === BussinesLogic.USER_ACTIONS.EXIT) {
-            this.view.sayGoodBye();
-        }
+        do {
+            console.log('ask user action');
+            actionType = await this.view.getUserActionType();
+
+            if (actionType === BussinesLogic.USER_ACTIONS.EXIT) {
+                this.view.sayGoodBye();
+                break;
+            }
+
+            console.log('ask again?');
+        } while (true);
     }
 }

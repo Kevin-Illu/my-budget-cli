@@ -1,18 +1,19 @@
 export namespace BussinesLogic {
-
-    // this const describe the actions that the user can do
-    // in the application
-    // this actions can be applied to all the diferents concerns
-    export const USER_ACTIONS = {
-        ADD: "add",
-        EDIT: "edit",
-        DELETE: "delete",
-        LIST: "list",
-        EXIT: "exit"
-    } as const;
-
-    export const USER_ACTIONS_SCOPES = {
-        expenses: [USER_ACTIONS.ADD, USER_ACTIONS.EDIT, USER_ACTIONS.DELETE, USER_ACTIONS.LIST],
-        application: [USER_ACTIONS.EXIT]
-    } as const;
+    /**
+     * A constant array of user command strings.
+     * 
+     * This array contains the keys for commands used in the application.
+     * Each string represents a specific user action command.
+     * 
+     * @remarks
+     * This array should only contain valid command strings that are recognized by the application.
+     */
+    export const USER_COMMANDS = [
+        "application:exit",
+        "application:expenses",
+        "expense:add",
+        "expense:edit",
+        "expense:remove",
+        "expense:list",
+    ] as const;
 }

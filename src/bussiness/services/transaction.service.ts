@@ -1,7 +1,7 @@
 import { UserTransaction } from "@budgetTypes/bussiness";
-import { Expense } from "@budgetTypes/entities";
 import TransactionStore from "../adapters/transaction-store.adapter";
 import TransactionFactory from "../factories/transaction.factory";
+import { BussinessEntities } from "@budgetTypes/entities";
 
 export class TransactionService {
   constructor(
@@ -27,14 +27,14 @@ export class TransactionService {
     }
   }
 
-  editCategory(editedTransaction: Expense): void {
+  editCategory(editedTransaction: BussinessEntities.Expense): void {
     this.transactionStore
       .update(editedTransaction)
       .then(console.log)
       .catch(console.log);
   }
 
-  editAmount(editedTransaction: Expense): void {
+  editAmount(editedTransaction: BussinessEntities.Expense): void {
     this.transactionStore
       .update(editedTransaction)
       .then((r) => {
@@ -51,7 +51,7 @@ export class TransactionService {
     this.transactionStore.deleteById(id).then(console.log).catch(console.log);
   }
 
-  getAllTransactions(): Promise<Expense[]> {
+  getAllTransactions(): Promise<BussinessEntities.Expense[]> {
     return this.transactionStore.getAll();
   }
 

@@ -60,3 +60,9 @@ export namespace Store {
         deleteById(id: string): Promise<boolean>;
     }
 }
+
+export namespace Infraestructure {
+    export interface Command {
+        execute(payload?: any): Promise<void>;
+    };
+}

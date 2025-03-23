@@ -1,11 +1,11 @@
-import { Expense } from "@budgetTypes/entities";
+import { BussinessEntities } from "@budgetTypes/entities";
 import { Store } from "@budgetTypes/infraestructure";
 
 
-class TransactionStore implements Store.AsyncStore<Expense> {
-  store: Store.SyncStore<Expense>;
+class TransactionStore implements Store.AsyncStore<BussinessEntities.Expense> {
+  store: Store.SyncStore<BussinessEntities.Expense>;
 
-  constructor(store: Store.SyncStore<Expense>) {
+  constructor(store: Store.SyncStore<BussinessEntities.Expense>) {
     this.store = store;
   }
 
@@ -21,21 +21,21 @@ class TransactionStore implements Store.AsyncStore<Expense> {
     });
   }
 
-  add(t: Expense): Promise<boolean> {
+  async add(t: BussinessEntities.Expense): Promise<boolean> {
     return this.asPromise(() => this.store.add(t)).catch(() => false);
   }
 
-  update(newTData: Expense): Promise<boolean> {
+  update(newTData: BussinessEntities.Expense): Promise<boolean> {
     return this.asPromise(() =>
       this.store.update((i) => i.id === newTData.id, newTData),
     );
   }
 
-  findById(id: string): Promise<Expense | undefined> {
+  findById(id: string): Promise<BussinessEntities.Expense | undefined> {
     return this.asPromise(() => this.store.find((i) => i.id === id));
   }
 
-  getAll(): Promise<Expense[]> {
+  getAll(): Promise<BussinessEntities.Expense[]> {
     return this.asPromise(() => this.store.getAll());
   }
 

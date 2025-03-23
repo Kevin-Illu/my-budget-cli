@@ -1,7 +1,12 @@
-export interface Expense {
-    id: string;
-    amount: number;
-    category: string;
-    pay_each: Date;
-    date: Date;
+
+export namespace BussinessEntities {
+
+    export interface Expense {
+        id: string;
+        amount: number;
+        category: string;
+        pay_each: Date;
+        date: Date;
+    }
+
 }

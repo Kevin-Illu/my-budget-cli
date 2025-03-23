@@ -1,23 +1,27 @@
 import { ApplicationTypes } from "@budgetTypes/bussiness";
-import { BussinesLogic } from "../consts";
 import BudgetView from "../views/budget/budget.view";
+import ExpensesPresenter from "./expenses.presenter";
 
 export default class BudgetPresenter {
+
     constructor(
-        private view: BudgetView
+        private view: BudgetView,
+        private expensesPresenter: ExpensesPresenter
     ) { }
 
     async startBudgetPresenter() {
-        let actionType: ApplicationTypes.ActionType;
+        let actionType: ApplicationTypes.UserCommands;
 
-        do {
-            actionType = await this.view.getUserActionType();
+        actionType = await this.view.getUserChoice();
 
-            if (actionType === BussinesLogic.USER_ACTIONS.EXIT) {
-                this.view.sayGoodBye();
-                break;
-            }
+        if (actionType === 'application:exit') {
+            this.view.sayGoodBye();
+            return;
+        }
 
-        } while (true);
+        if (actionType === 'application:expenses') {
+            this.expensesPresenter.displayUserOptions()
+        }
+
     }
 }

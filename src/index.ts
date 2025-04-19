@@ -11,6 +11,7 @@ class Application {
       new BudgetView(),
       new ExpensesPresenter(new ExpensesView())
     );
+
     this.presenter.startBudgetPresenter();
   }
 }

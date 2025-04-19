@@ -1,5 +1,5 @@
 import { BussinessEntities } from "@budgetTypes/entities";
-import { Store } from "@budgetTypes/infraestructure";
+import { Store } from "@budgetTypes/infrastructure";
 
 
 class TransactionStore implements Store.AsyncStore<BussinessEntities.Expense> {

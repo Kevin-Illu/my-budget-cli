@@ -1,4 +1,4 @@
-import { Store } from "@budgetTypes/infraestructure";
+import { Store } from "@budgetTypes/infrastructure";
 
 
 class TNode<T> {

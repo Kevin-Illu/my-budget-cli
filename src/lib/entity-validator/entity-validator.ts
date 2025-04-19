@@ -1,6 +1,6 @@
 import { EntityValidatorSchema, ValidatorError } from "./entity-validators.definitions";
 
-// TODO: add jsdocs to this class ;D
+// TODO: add jsdoc to this class ;D
 export default class EntityValidator {
     constructor() { }
 
@@ -21,8 +21,6 @@ export default class EntityValidator {
                         return result;
                     }
                 }
-            } else {
-                continue;
             }
         }
     };
@@ -30,13 +28,13 @@ export default class EntityValidator {
     static required(value): ValidatorError {
         if (value !== undefined && value !== null) {
             return {
-                messsage: "",
+                message: "",
                 error: false
             }
         }
 
         return {
-            messsage: "The value is required",
+            message: "The value is required",
             error: true
         }
     }

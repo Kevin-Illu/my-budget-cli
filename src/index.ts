@@ -9,7 +9,7 @@ class Application {
   start() {
     this.presenter = new BudgetPresenter(
       new BudgetView(),
-      new ExpensesPresenter(new ExpensesView())
+      new ExpensesPresenter(new ExpensesView()),
     );
 
     this.presenter.startBudgetPresenter();

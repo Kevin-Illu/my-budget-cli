@@ -7,43 +7,45 @@ export default class ExpensesView extends View {
   private expensesOptions = [
     {
       name: "Create a new expense",
-      value: "expense:add",
+      value: "expense:action:add",
       description: "create a new transaction",
     },
     {
       name: "Edit the amount of the expense",
-      value: "expense:edit",
+      value: "expense:action:edit",
       description: "choose a transaction to edit",
     },
     {
       name: "Delete expense",
-      value: "expense:delete",
+      value: "expense:action:delete",
       description: "delete an specific transactions",
     },
     {
       name: "List of expenses",
-      value: "expense:list",
+      value: "expense:action:list",
       description: "display all the transactions",
     },
     {
       name: "<- Go back",
-      value: "application:history:go-back",
+      value: "application:action:history:go-back",
       description: "go to application",
     },
   ];
 
   async getUserChoice() {
-    console.clear();
+    this.clearView();
 
-    const userSelection = await TryCatch.runAsync(() =>
+    const action = await TryCatch.runAsync(() =>
       select({
         message: "Your expenses",
         choices: this.expensesOptions,
       }),
-    );
+    ).then((r) => r.unwrapOr("application:action:exit"));
 
-    return userSelection.value as
+    console.log(action);
+
+    return action as
       | Commands.ExpenseCommands
-      | ApplicationTypes.ApplicationHistoryActions;
+      | ApplicationTypes.ApplicationActions;
   }
 }

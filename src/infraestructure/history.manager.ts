@@ -38,4 +38,12 @@ export default class HistoryManager<T> {
     this.future = [];
     this.current = null;
   }
+
+  public getHistory() {
+    return {
+      current: this.current,
+      future: this.future,
+      past: this.past,
+    };
+  }
 }

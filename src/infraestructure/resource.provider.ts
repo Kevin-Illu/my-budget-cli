@@ -3,6 +3,8 @@ import { Store } from "@budgetTypes/infrastructure";
 import { CommandRegistry } from "./command.registry";
 import { ApplicationTypes, Commands } from "@budgetTypes/bussiness";
 import HistoryManager from "./history.manager";
+import { BusinessLogic } from "../consts";
+import APPLICATION_COMMANDS = BusinessLogic.APPLICATION_CAPABILITIES;
 
 export default class ResourceProvider {
   /**
@@ -21,14 +23,16 @@ export default class ResourceProvider {
    * easily handle actions like go forward or go back
    * like a browser navigation ;)
    */
-  static historyManager: HistoryManager<ApplicationTypes.UserApplicationCommands>;
+  static historyManager: HistoryManager<ApplicationTypes.ApplicationActions>;
 
   static {
     this.store = new LinkedList();
     this.commandRegistry = new CommandRegistry();
 
     // manage the history of the application
-    this.historyManager = new HistoryManager("application:expenses");
+    this.historyManager = new HistoryManager(
+      APPLICATION_COMMANDS.app.listOptions,
+    );
 
     // Optionally, register commands here:
     // this.commandRegistry.register("expense:add", new AddExpenseCommand());
@@ -44,7 +48,7 @@ export default class ResourceProvider {
     return this.commandRegistry;
   }
 
-  static getHistoryManager(): HistoryManager<ApplicationTypes.UserApplicationCommands> {
+  static getHistoryManager(): HistoryManager<ApplicationTypes.ApplicationActions> {
     return this.historyManager;
   }
 }

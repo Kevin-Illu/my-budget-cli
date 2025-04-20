@@ -2,32 +2,33 @@ import { select } from "@inquirer/prompts";
 import { ApplicationTypes } from "@budgetTypes/bussiness";
 import TryCatch from "../../infraestructure/trycatch";
 import View from "../view";
+import ResourceProvider from "../../infraestructure/resource.provider";
 
 export default class BudgetView extends View {
   private applicationOptions = [
     {
       name: "Manage expenses",
-      value: "application:expenses:list-options",
+      value: "application:action:expenses:list-options",
       description: "View, Edit your expenses.",
     },
     {
       name: "Exit the application",
-      value: "application:exit",
+      value: "application:action:exit",
       description: "exit to the application ;)",
     },
   ];
 
-  async getUserChoice(): Promise<ApplicationTypes.ApplicationCommands> {
+  async getUserChoice(): Promise<ApplicationTypes.ApplicationActions> {
     this.clearView();
 
-    const userAction = await TryCatch.runAsync(() =>
+    const action = await TryCatch.runAsync(() =>
       select({
         message: "Your expenses",
         choices: this.applicationOptions,
       }),
-    ).then((r) => r.unwrapOr("application:exit"));
+    ).then((r) => r.unwrapOr("application:action:exit"));
 
-    return userAction as ApplicationTypes.ApplicationCommands;
+    return action as ApplicationTypes.ApplicationActions;
   }
 
   sayGoodBye() {

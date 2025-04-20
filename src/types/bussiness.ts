@@ -7,26 +7,17 @@ export interface UserTransaction
 /**
  * Represent all the command available in the system
  */
-export type UserCommands = (typeof BusinessLogic.USER_COMMANDS)[number];
+export type UserCommands = (typeof BusinessLogic.CAPABILITIES)[number];
 
 export namespace ApplicationTypes {
   export type ApplicationActions = Extract<
     UserCommands,
-    `application:${string}`
+    `application:action:${string}`
   >;
 
   export type ApplicationHistoryActions = Extract<
     UserCommands,
-    `application:history:${string}`
-  >;
-
-  /**
-   * Represent the commands that execute Application and Business logic
-   * Omitting System logic like History or Store Management.
-   */
-  export type UserApplicationCommands = Omit<
-    UserCommands,
-    ApplicationHistoryActions
+    `application:action:history:${string}`
   >;
 }
 

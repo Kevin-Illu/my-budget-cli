@@ -47,6 +47,12 @@ export namespace BusinessLogic {
    *
    * This array contains the keys for commands used in the application.
    * Each string represents a specific user action or command.
+   *
+   * @privateRemarks
+   * I think this const is not used, it will never be used in the application
+   * only for extract correctly the types of commands and actions Dx
+   *
+   * This need to be updated.
    */
   export const CAPABILITIES = [
     // exit the application

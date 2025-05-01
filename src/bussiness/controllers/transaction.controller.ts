@@ -1,52 +1,10 @@
-// TODO:
-// implement the respective clases for the view and do the adapters
-// also handle more functionalities
-// manage errors correctly u.u
-//
-//
-// btw this works correctly and do all the CRUD ;D
-
 import { input } from "@inquirer/prompts";
 import { TransactionService } from "../services/transaction.service";
 import { select, Separator } from "@inquirer/prompts";
 import { BussinessEntities } from "@budgetTypes/entities";
 
 class TransactionController {
-  actions = {
-    add: async () => {
-      await this.handleCreationNewTransaction();
-    },
-    edit: async () => {
-      await this.editTheAmountOfTransaction();
-    },
-    delete: async () => {
-      await this.deleteTransaction();
-    },
-    list: async () => {
-      const count = await this.transactionService.countTransactions();
-
-      if (count >= 1) {
-        await this.handleListAllTransactions();
-        return;
-      }
-
-      console.log("the list are empty");
-    },
-  };
-
   constructor(private transactionService: TransactionService) { }
-
-  async startBudgetPresenter() {
-    // TODO: why this sometimes crash?
-    while (true) {
-      const choice = await this.handlingActionChoice();
-      if (choice === "exit") {
-        return;
-      } else {
-        await this.actions[choice]();
-      }
-    }
-  }
 
   async handleListAllTransactions() {
     const transactions = await this.transactionService.getAllTransactions();

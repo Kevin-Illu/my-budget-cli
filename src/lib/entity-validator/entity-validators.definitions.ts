@@ -33,7 +33,6 @@ export type EntityValidatorSchemaValue =
 
 // Angular's like schema for the entity validator
 // the schema is used to validate the values of the entities
-// TODO: support nested objects in the schema ;)
 export type EntityValidatorSchema = {
-  [key: string]: EntityValidatorSchemaValue;
+  [key: string]: EntityValidatorSchemaValue | EntityValidatorSchema;
 };

@@ -19,7 +19,8 @@ export default class BudgetPresenter {
     command = await this.view.getUserChoice();
     this.historyManager.visit(APPLICATION_COMMANDS.app.actions.listOptions);
 
-    while (await this.handleCommand(command)) {}
+    // this runs recursively
+    await this.handleCommand(command);
   }
 
   async handleCommand(command: Commands.Commands | ApplicationActions) {
@@ -29,7 +30,7 @@ export default class BudgetPresenter {
         console.log({
           history: ResourceProvider.getHistoryManager().getHistory(),
         });
-        return false;
+        return;
 
       case APPLICATION_COMMANDS.business.expenses.actions.listOptions:
         this.historyManager.visit(command);
@@ -50,7 +51,7 @@ export default class BudgetPresenter {
 
       default:
         this.historyManager.clear();
-        return false;
+        return;
     }
   }
 

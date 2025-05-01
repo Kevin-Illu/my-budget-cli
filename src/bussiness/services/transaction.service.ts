@@ -10,7 +10,6 @@ export class TransactionService {
   ) { }
 
   createTransaction(t: UserTransaction): void {
-    // TODO: refactor this code, must be a priority.
     try {
       const transaction = this.transactionFactory.create(t);
       this.transactionStore

@@ -31,7 +31,7 @@ export default class ResourceProvider {
 
     // manage the history of the application
     this.historyManager = new HistoryManager(
-      APPLICATION_COMMANDS.app.listOptions,
+      APPLICATION_COMMANDS.app.actions.listOptions,
     );
 
     // Optionally, register commands here:

@@ -23,7 +23,7 @@ class TransactionFactory {
     return errors;
   }
 
-  // TODO: verify if throwing an error is an aceptable solution D;
+  // TODO: verify if throwing an error is an acceptable solution D;
   create(t: UserTransaction): BussinessEntities.Expense {
     const errors = this.validateTransaction(t);
 

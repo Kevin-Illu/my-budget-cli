@@ -5,6 +5,9 @@ and not lost progress?
 
 - ## UI
     - [ ] handle nested menus
+      - I need to implement a way to always return the 
+      response from the deep menu outside to allow the dispatcher handle that.
+
     - [ ] read from files the menus
     - [ ] create a better way to create UI
 - ## APP

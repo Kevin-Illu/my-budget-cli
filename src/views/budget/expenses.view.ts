@@ -1,4 +1,8 @@
-import { ApplicationTypes, Commands } from "@budgetTypes/bussiness";
+import {
+  ApplicationTypes,
+  Commands,
+  ExpensesTypes,
+} from "@budgetTypes/bussiness";
 import TryCatch from "../../infraestructure/trycatch";
 import { select } from "@inquirer/prompts";
 import View from "../view";
@@ -42,10 +46,8 @@ export default class ExpensesView extends View {
       }),
     ).then((r) => r.unwrapOr("application:action:exit"));
 
-    console.log(action);
-
     return action as
-      | Commands.ExpenseCommands
-      | ApplicationTypes.ApplicationActions;
+      | ApplicationTypes.ApplicationActions
+      | ExpensesTypes.ExpensesActions;
   }
 }

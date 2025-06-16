@@ -12,7 +12,7 @@ class Application {
       new ExpensesPresenter(new ExpensesView()),
     );
 
-    this.presenter.startBudgetPresenter();
+    this.presenter.displayMenu();
   }
 }
 

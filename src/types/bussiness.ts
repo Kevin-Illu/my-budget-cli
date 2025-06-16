@@ -21,14 +21,13 @@ export namespace ApplicationTypes {
   >;
 }
 
+export namespace ExpensesTypes {
+  export type ExpensesActions = Extract<
+    UserCommands,
+    `expenses:action:${string}`
+  >;
+}
+
 export namespace Commands {
   export type Commands = Extract<UserCommands, `${string}:command:${string}`>;
-
-  /**
-   * It's used to Identify only the Expenses Actions
-   */
-  export type ExpenseCommands = Extract<
-    UserCommands,
-    `expense:command:${string}`
-  >;
 }

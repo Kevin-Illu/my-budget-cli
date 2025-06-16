@@ -5,16 +5,19 @@ import { BusinessLogic } from "../consts";
 import ResourceProvider from "../infraestructure/resource.provider";
 import APPLICATION_COMMANDS = BusinessLogic.APPLICATION_CAPABILITIES;
 import ApplicationActions = ApplicationTypes.ApplicationActions;
+import PresenterBase from "./presenter.base";
 
-export default class BudgetPresenter {
+export default class BudgetPresenter extends PresenterBase {
   historyManager = ResourceProvider.getHistoryManager();
 
   constructor(
     private view: BudgetView,
     private expensesPresenter: ExpensesPresenter,
-  ) {}
+  ) {
+    super();
+  }
 
-  async startBudgetPresenter() {
+  async displayMenu() {
     let command: ApplicationTypes.ApplicationActions;
     command = await this.view.getUserChoice();
     this.historyManager.visit(APPLICATION_COMMANDS.app.actions.listOptions);
@@ -25,17 +28,25 @@ export default class BudgetPresenter {
 
   async handleCommand(command: Commands.Commands | ApplicationActions) {
     switch (command) {
+      /*
+      Exit the recursion loop if the command is EXIT or
+      an exception, whatever happens first.
+       */
       case APPLICATION_COMMANDS.app.actions.exit:
         this.view.sayGoodBye();
-        console.log({
-          history: ResourceProvider.getHistoryManager().getHistory(),
-        });
+        // TODO: Do I need to start a log process to get metrics?
+        // I think I could ;)
+        // console.log({
+        //   history: ResourceProvider.getHistoryManager().getHistory(),
+        // });
         return;
 
+      // TODO: get a way to group actions from expenses and application
+      // TODO: Implement a way to handle nested commands and actions Dx
       case APPLICATION_COMMANDS.business.expenses.actions.listOptions:
         this.historyManager.visit(command);
         const nextCommand =
-          (await this.expensesPresenter.displayUserOptions()) ??
+          (await this.expensesPresenter.displayMenu()) ??
           APPLICATION_COMMANDS.app.actions.exit;
         return await this.handleCommand(nextCommand);
 
@@ -53,18 +64,5 @@ export default class BudgetPresenter {
         this.historyManager.clear();
         return;
     }
-  }
-
-  resolveHistoryCommand(
-    commandHistory: ApplicationTypes.ApplicationHistoryActions,
-  ) {
-    if (commandHistory === APPLICATION_COMMANDS.app.history.actions.goBack) {
-      ResourceProvider.getHistoryManager().back();
-      return ResourceProvider.getHistoryManager().getCurrent();
-    }
-
-    // go forward
-    ResourceProvider.getHistoryManager().forward();
-    return ResourceProvider.getHistoryManager().getCurrent();
   }
 }

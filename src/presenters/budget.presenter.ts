@@ -18,51 +18,33 @@ export default class BudgetPresenter extends PresenterBase {
   }
 
   async displayMenu() {
-    let command: ApplicationTypes.ApplicationActions;
-    command = await this.view.getUserChoice();
-    this.historyManager.visit(APPLICATION_COMMANDS.app.actions.listOptions);
+    let command: ApplicationTypes.ApplicationActions = await this.view.getUserChoice();
 
-    // this runs recursively
-    await this.handleCommand(command);
+    while (command !== APPLICATION_COMMANDS.app.actions.exit) {
+      this.historyManager.visit(command);
+      command = await this.dispatchCommand(command);
+    }
+
+    this.view.sayGoodBye();
+    console.log({ history: this.historyManager.getHistory() });
   }
 
-  async handleCommand(command: Commands.Commands | ApplicationActions) {
+  async dispatchCommand(command: Commands.Commands | ApplicationActions) {
     switch (command) {
-      /*
-      Exit the recursion loop if the command is EXIT or
-      an exception, whatever happens first.
-       */
-      case APPLICATION_COMMANDS.app.actions.exit:
-        this.view.sayGoodBye();
-        // TODO: Do I need to start a log process to get metrics?
-        // I think I could ;)
-        // console.log({
-        //   history: ResourceProvider.getHistoryManager().getHistory(),
-        // });
-        return;
-
-      // TODO: get a way to group actions from expenses and application
-      // TODO: Implement a way to handle nested commands and actions Dx
       case APPLICATION_COMMANDS.business.expenses.actions.listOptions:
-        this.historyManager.visit(command);
-        const nextCommand =
-          (await this.expensesPresenter.displayMenu()) ??
-          APPLICATION_COMMANDS.app.actions.exit;
-        return await this.handleCommand(nextCommand);
-
-      case APPLICATION_COMMANDS.app.actions.listOptions:
-        const userChoice = await this.view.getUserChoice();
-        return await this.handleCommand(userChoice);
+        const subCommand = await this.expensesPresenter.displayMenu();
+        return subCommand;
 
       case APPLICATION_COMMANDS.app.history.actions.goBack:
-      case APPLICATION_COMMANDS.app.history.actions.goForward: {
-        const resolvedCommand = this.resolveHistoryCommand(command);
-        return await this.handleCommand(resolvedCommand);
-      }
+      case APPLICATION_COMMANDS.app.history.actions.goForward:
+        return this.resolveHistoryCommand(command);
+
+      case APPLICATION_COMMANDS.app.actions.listOptions:
+        return await this.view.getUserChoice();
 
       default:
         this.historyManager.clear();
-        return;
+        return APPLICATION_COMMANDS.app.actions.exit;
     }
   }
 }

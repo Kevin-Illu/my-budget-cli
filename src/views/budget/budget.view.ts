@@ -2,18 +2,18 @@ import { select } from "@inquirer/prompts";
 import { ApplicationTypes } from "@budgetTypes/bussiness";
 import TryCatch from "../../infraestructure/trycatch";
 import View from "../view";
-import ResourceProvider from "../../infraestructure/resource.provider";
+import { BusinessLogic } from "../../consts";
 
 export default class BudgetView extends View {
   private applicationOptions = [
     {
       name: "Manage expenses",
-      value: "application:action:expenses:list-options",
+      value: BusinessLogic.APPLICATION_CAPABILITIES.business.expenses.actions.listOptions,
       description: "View, Edit your expenses.",
     },
     {
       name: "Exit the application",
-      value: "application:action:exit",
+      value: BusinessLogic.APPLICATION_CAPABILITIES.app.actions.exit,
       description: "exit to the application ;)",
     },
   ];
@@ -26,7 +26,7 @@ export default class BudgetView extends View {
         message: "Your expenses",
         choices: this.applicationOptions,
       }),
-    ).then((r) => r.unwrapOr("application:action:exit"));
+    ).then((r) => r.unwrapOr(BusinessLogic.APPLICATION_CAPABILITIES.app.actions.exit));
 
     return action as ApplicationTypes.ApplicationActions;
   }

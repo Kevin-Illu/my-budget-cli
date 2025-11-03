@@ -1,37 +1,33 @@
-import {
-  ApplicationTypes,
-  Commands,
-  ExpensesTypes,
-} from "@budgetTypes/bussiness";
 import TryCatch from "../../infraestructure/trycatch";
 import { select } from "@inquirer/prompts";
 import View from "../view";
+import { BusinessLogic } from "../../consts";
 
 export default class ExpensesView extends View {
   private expensesOptions = [
     {
       name: "Create a new expense",
-      value: "expense:action:add",
+      value: BusinessLogic.APPLICATION_CAPABILITIES.business.expenses.actions.add,
       description: "create a new transaction",
     },
     {
       name: "Edit the amount of the expense",
-      value: "expense:action:edit",
+      value: BusinessLogic.APPLICATION_CAPABILITIES.business.expenses.actions.edit,
       description: "choose a transaction to edit",
     },
     {
       name: "Delete expense",
-      value: "expense:action:delete",
+      value: BusinessLogic.APPLICATION_CAPABILITIES.business.expenses.actions.remove,
       description: "delete an specific transactions",
     },
     {
       name: "List of expenses",
-      value: "expense:action:list",
+      value: BusinessLogic.APPLICATION_CAPABILITIES.business.expenses.actions.list,
       description: "display all the transactions",
     },
     {
       name: "<- Go back",
-      value: "application:action:history:go-back",
+      value: BusinessLogic.APPLICATION_CAPABILITIES.app.history.actions.goBack,
       description: "go to application",
     },
   ];
@@ -39,15 +35,14 @@ export default class ExpensesView extends View {
   async getUserChoice() {
     this.clearView();
 
-    const action = await TryCatch.runAsync(() =>
+    const command = await TryCatch.runAsync(() =>
       select({
         message: "Your expenses",
         choices: this.expensesOptions,
-      }),
-    ).then((r) => r.unwrapOr("application:action:exit"));
+      })
+    ).then((r) => r.unwrapOr(BusinessLogic.APPLICATION_CAPABILITIES.app.history.actions.goBack));
 
-    return action as
-      | ApplicationTypes.ApplicationActions
-      | ExpensesTypes.ExpensesActions;
+
+    return command;
   }
 }

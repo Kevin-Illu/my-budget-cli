@@ -2,7 +2,12 @@ import { Store } from "@budgetTypes/infrastructure";
 
 
 class TNode<T> {
-  data: T;
+  data: T = {
+    "id": "1",
+    "description": "Groceries",
+    "amount": 150.75,
+    "date": "2024-06-15"
+  } as unknown as T;
   next: TNode<T> | null;
 
   constructor(data: T) {
@@ -135,6 +140,10 @@ class LinkedList<T> implements Store.SyncStore<T> {
 
   size(): number {
     return this.count;
+  }
+
+  bullk(items: T[]): boolean[] {
+    return items.map((item) => this.add(item));
   }
 }
 

@@ -1,9 +1,10 @@
-import TryCatch from "../../infraestructure/trycatch";
+import TryCatch from "../infraestructure/trycatch";
 import { select } from "@inquirer/prompts";
-import View from "../view";
-import { BusinessLogic } from "../../consts";
+import View from "./view";
+import { BusinessLogic } from "../consts";
 
-export default class ExpensesView extends View {
+export default class ExpensesView extends View
+  implements Presentation.View {
   private expensesOptions = [
     {
       name: "Create a new expense",

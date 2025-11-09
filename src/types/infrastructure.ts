@@ -12,21 +12,7 @@ export namespace Store {
    * @method find - Find an item in the store
    * @method update - Update an item in the store
    * @method size - Get the size of the store
-   *
-   * @example
-   * const store = new Store<number>();
-   * store.add(1);
-   * store.add(2);
-   * store.add(3);
-   * store.getAll(); // [1, 2, 3]
-   * store.delete((item) => item === 2); // true
-   * store.getAll(); // [1, 3]
-   * store.deleteAt(0); // 1
-   * store.getAll(); // [3]
-   * store.find((item) => item === 3); // 3
-   * store.update((item) => item === 3, 4); // true
-   * store.getAll(); // [4]
-   * store.size(); // 1
+   * @method bullk - Add multiple items to the store
    */
   export interface SyncStore<T> {
     add(item: T): boolean;
@@ -42,6 +28,8 @@ export namespace Store {
     update(compare: (item: T) => boolean, newValue: T): boolean;
 
     size(): number;
+
+    bullk(items: T[]): boolean[];
   }
 
   /**
@@ -55,6 +43,7 @@ export namespace Store {
    * @method update - Update an item in the store
    * @method size - Get the size of the store
    * @method deleteById - Delete an
+   * @method bullk - Add multiple items to the store
    */
   export interface AsyncStore<T> {
     add(t: T): Promise<boolean>;
@@ -68,11 +57,15 @@ export namespace Store {
     countAll(): Promise<number>;
 
     deleteById(id: string): Promise<boolean>;
+
+    bullk(items: T[]): Promise<boolean[]>;
   }
 }
 
 export namespace Infrastructure {
+
   export interface Command<ReturnType = void> {
     execute(payload?: any): Promise<ReturnType>;
   }
+
 }

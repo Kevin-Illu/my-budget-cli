@@ -1,7 +1,7 @@
 import BudgetPresenter from "./presenters/budget.presenter";
 import ExpensesPresenter from "./presenters/expenses.presenter";
-import BudgetView from "./views/budget/budget.view";
-import ExpensesView from "./views/budget/expenses.view";
+import BudgetView from "./views/budget.view";
+import ExpensesView from "./views/expenses.view";
 
 class Application {
   private presenter: BudgetPresenter;

@@ -1,14 +1,15 @@
 import { ApplicationTypes, ExpensesTypes } from "@budgetTypes/bussiness";
-import ExpensesView from "../views/budget/expenses.view";
+import ExpensesView from "../views/expenses.view";
 import { BusinessLogic } from "../consts";
 import APPLICATION_COMMANDS = BusinessLogic.APPLICATION_CAPABILITIES;
 import ApplicationActions = ApplicationTypes.ApplicationActions;
 import ExpensesActions = ExpensesTypes.ExpensesActions;
-import ResourceProvider from "../infraestructure/resource.provider";
+import AppContext from "../infraestructure/app.context";
 import PresenterBase from "./presenter.base";
 
-export default class ExpensesPresenter extends PresenterBase {
-  historyManager = ResourceProvider.getHistoryManager();
+export default class ExpensesPresenter extends PresenterBase
+  implements Presentation.Presenter {
+  historyManager = AppContext.getHistoryManager();
 
   constructor(private view: ExpensesView) {
     super();

@@ -1,10 +1,11 @@
 import { select } from "@inquirer/prompts";
 import { ApplicationTypes } from "@budgetTypes/bussiness";
-import TryCatch from "../../infraestructure/trycatch";
-import View from "../view";
-import { BusinessLogic } from "../../consts";
+import TryCatch from "./../infraestructure/trycatch";
+import View from "./view";
+import { BusinessLogic } from "./../consts";
 
-export default class BudgetView extends View {
+export default class BudgetView extends View
+  implements Presentation.View {
   private applicationOptions = [
     {
       name: "Manage expenses",

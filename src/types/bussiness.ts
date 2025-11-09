@@ -1,33 +1,33 @@
 import { BusinessLogic } from "../consts";
-import { BussinessEntities } from "./entities";
+import { Entities } from "./entities";
 
 export interface UserTransaction
-  extends Omit<BussinessEntities.Expense, "id" | "date"> {}
+  extends Omit<Entities.Expense, "id" | "date"> { }
 
 /**
  * Represent all the command available in the system
  */
-export type UserCommands = (typeof BusinessLogic.CAPABILITIES)[number];
+export type UserCommandsAndActions = (typeof BusinessLogic.CAPABILITIES)[number];
 
 export namespace ApplicationTypes {
   export type ApplicationActions = Extract<
-    UserCommands,
+    UserCommandsAndActions,
     `application:action:${string}`
   >;
 
   export type ApplicationHistoryActions = Extract<
-    UserCommands,
+    UserCommandsAndActions,
     `application:action:history:${string}`
   >;
 }
 
 export namespace ExpensesTypes {
   export type ExpensesActions = Extract<
-    UserCommands,
+    UserCommandsAndActions,
     `expenses:action:${string}`
   >;
 }
 
 export namespace Commands {
-  export type Commands = Extract<UserCommands, `${string}:command:${string}`>;
+  export type Commands = Extract<UserCommandsAndActions, `${string}:command:${string}`>;
 }

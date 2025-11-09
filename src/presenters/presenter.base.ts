@@ -1,5 +1,5 @@
 import { ApplicationTypes } from "@budgetTypes/bussiness";
-import ResourceProvider from "../infraestructure/resource.provider";
+import AppContext from "../infraestructure/app.context";
 import { BusinessLogic } from "../consts";
 import APPLICATION_COMMANDS = BusinessLogic.APPLICATION_CAPABILITIES;
 
@@ -8,12 +8,12 @@ export default abstract class PresenterBase {
     commandHistory: ApplicationTypes.ApplicationHistoryActions,
   ) {
     if (commandHistory === APPLICATION_COMMANDS.app.history.actions.goBack) {
-      ResourceProvider.getHistoryManager().back();
-      return ResourceProvider.getHistoryManager().getCurrent();
+      AppContext.getHistoryManager().back();
+      return AppContext.getHistoryManager().getCurrent();
     }
 
     // go forward
-    ResourceProvider.getHistoryManager().forward();
-    return ResourceProvider.getHistoryManager().getCurrent();
+    AppContext.getHistoryManager().forward();
+    return AppContext.getHistoryManager().getCurrent();
   };
 }

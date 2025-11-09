@@ -37,7 +37,16 @@ export default class ExpensesPresenter extends PresenterBase
     action: ApplicationActions | ExpensesActions,
   ) {
     switch (action) {
-      case APPLICATION_COMMANDS.business.expenses.actions.list:
+      case APPLICATION_COMMANDS.business.expenses.actions.list: {
+
+        const listOfExpenses = await AppContext.commandBus.execute(
+          APPLICATION_COMMANDS.business.expenses.commands.list
+        )
+
+        console.table(listOfExpenses);
+
+        return APPLICATION_COMMANDS.app.actions.listOptions;
+      }
       case APPLICATION_COMMANDS.business.expenses.actions.add:
       case APPLICATION_COMMANDS.business.expenses.actions.edit:
       case APPLICATION_COMMANDS.business.expenses.actions.remove:

@@ -2,12 +2,7 @@ import { Store } from "@budgetTypes/infrastructure";
 
 
 class TNode<T> {
-  data: T = {
-    "id": "1",
-    "description": "Groceries",
-    "amount": 150.75,
-    "date": "2024-06-15"
-  } as unknown as T;
+  data: T;
   next: TNode<T> | null;
 
   constructor(data: T) {

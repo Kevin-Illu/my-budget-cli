@@ -43,9 +43,9 @@ export default class ExpensesPresenter extends PresenterBase
           APPLICATION_COMMANDS.business.expenses.commands.list
         )
 
-        console.table(listOfExpenses);
+        await this.view.listExpenses(listOfExpenses);
 
-        return APPLICATION_COMMANDS.app.actions.listOptions;
+        // return APPLICATION_COMMANDS.app.actions.listOptions;
       }
       case APPLICATION_COMMANDS.business.expenses.actions.add:
       case APPLICATION_COMMANDS.business.expenses.actions.edit:

@@ -48,6 +48,15 @@ export default class AppContext {
       APPLICATION_COMMANDS.app.actions.listOptions,
     );
 
+    // Seed some initial data into the store for testing/demo purposes
+    const expenses = [
+      { date: '2025-11-08', category: 'Food', amount: 25.50, description: 'Lunch with friends' },
+      { date: '2025-11-07', category: 'Transport', amount: 12.00, description: 'Bus ticket' },
+      { date: '2025-11-06', category: 'Utilities', amount: 60.00, description: 'Electricity bill' },
+    ];
+
+    this.store.bullk(expenses);
+
     // Register all commands in the command registry
     for (const [commandName, commandClass] of Object.entries(COMMAND_DEFINITIONS)) {
       this.commandRegistry.register(

@@ -1,7 +1,9 @@
 import TryCatch from "../infraestructure/trycatch";
-import { select } from "@inquirer/prompts";
+import { rawlist, select, confirm } from "@inquirer/prompts";
 import View from "./view";
 import { BusinessLogic } from "../consts";
+import { ExpensesTypes } from "@budgetTypes/bussiness";
+import { Entities } from "@budgetTypes/entities";
 
 export default class ExpensesView extends View
   implements Presentation.View {
@@ -45,5 +47,25 @@ export default class ExpensesView extends View
 
 
     return command;
+  }
+
+  async listExpenses(expenses: Entities.Expense[]) {
+    if (expenses.length === 0) {
+      const answer = await confirm({
+        message: "No expenses found. Do you want to add a new expense?",
+        default: true,
+      })
+      return answer;
+    }
+
+    const selection = await rawlist({
+      message: "List of expenses",
+      choices: expenses.map((expense) => ({
+        name: `${expense.description} - $${expense.amount} `,
+        value: expense.id,
+      })),
+    })
+
+    return selection;
   }
 }

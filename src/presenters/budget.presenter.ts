@@ -19,20 +19,26 @@ export default class BudgetPresenter extends PresenterBase
   }
 
   async displayMenu() {
+    this.historyManager.visit(APPLICATION_COMMANDS.app.actions.listOptions);
     let command: ApplicationTypes.ApplicationActions = await this.view.getUserChoice();
 
     while (command !== APPLICATION_COMMANDS.app.actions.exit) {
-      this.historyManager.visit(command);
+      if (
+        command !== APPLICATION_COMMANDS.app.history.actions.goBack &&
+        command !== APPLICATION_COMMANDS.app.history.actions.goForward
+      ) {
+        this.historyManager.visit(command);
+      }
+
       command = await this.dispatchCommand(command);
     }
 
-    this.view.sayGoodBye();
-    console.log({ history: this.historyManager.getHistory() });
+    return command;
   }
 
-  async dispatchCommand(command: Commands.Commands | ApplicationActions) {
+  async dispatchCommand(command: ApplicationActions | Commands.Commands) {
     switch (command) {
-      case APPLICATION_COMMANDS.business.expenses.actions.listOptions:
+      case APPLICATION_COMMANDS.app.actions.listExpensesOptions:
         const subCommand = await this.expensesPresenter.displayMenu();
         return subCommand;
 
@@ -41,11 +47,15 @@ export default class BudgetPresenter extends PresenterBase
         return this.resolveHistoryCommand(command);
 
       case APPLICATION_COMMANDS.app.actions.listOptions:
-        return await this.view.getUserChoice();
-
+        return command;
       default:
-        this.historyManager.clear();
-        return APPLICATION_COMMANDS.app.actions.exit;
+        return APPLICATION_COMMANDS.app.actions.listOptions;
     }
+  }
+
+  stop() {
+    this.view.sayGoodBye();
+    console.log({ history: this.historyManager.getHistory() });
+    this.historyManager.clear();
   }
 }

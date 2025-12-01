@@ -9,7 +9,7 @@ export default class BudgetView extends View
   private applicationOptions = [
     {
       name: "Manage expenses",
-      value: BusinessLogic.APPLICATION_CAPABILITIES.business.expenses.actions.listOptions,
+      value: BusinessLogic.APPLICATION_CAPABILITIES.app.actions.listExpensesOptions,
       description: "View, Edit your expenses.",
     },
     {

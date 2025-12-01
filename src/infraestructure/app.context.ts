@@ -7,7 +7,7 @@
 import LinkedList from "./stores/linked-list.store";
 import { Store } from "@budgetTypes/infrastructure";
 import { CommandRegistry } from "./commands/command.registry";
-import { ApplicationTypes, Commands } from "@budgetTypes/bussiness";
+import { ApplicationTypes, Commands, ExpensesTypes } from "@budgetTypes/bussiness";
 import HistoryManager from "./history.manager";
 import { BusinessLogic } from "../consts";
 import APPLICATION_COMMANDS = BusinessLogic.APPLICATION_CAPABILITIES;
@@ -77,7 +77,9 @@ export default class AppContext {
     return this.commandRegistry;
   }
 
-  static getHistoryManager(): HistoryManager<ApplicationTypes.ApplicationActions> {
+  static getHistoryManager(): HistoryManager<
+    ApplicationTypes.ApplicationActions
+  > {
     return this.historyManager;
   }
 }

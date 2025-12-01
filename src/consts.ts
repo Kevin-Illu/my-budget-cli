@@ -15,6 +15,7 @@ export namespace BusinessLogic {
       actions: {
         exit: "application:action:exit",
         listOptions: "application:action:list-options",
+        listExpensesOptions: "application:action:expenses:list-options",
       },
       history: {
         actions: {
@@ -25,13 +26,14 @@ export namespace BusinessLogic {
     },
     business: {
       expenses: {
+        // Actions are used to interact with the UI
         actions: {
-          listOptions: "application:action:expenses:list-options",
-          list: "expenses:action:list",
-          add: "expenses:action:add",
-          edit: "expenses:action:edit",
-          remove: "expenses:action:remove",
+          list: "application:action:expenses:action:list",
+          add: "application:action:expenses:action:add",
+          edit: "application:action:expenses:action:edit",
+          remove: "application:action:expenses:action:remove",
         },
+        // Commands are used to interact with the DATA
         commands: {
           list: "expenses:command:list",
           add: "expenses:command:add",
@@ -58,6 +60,7 @@ export namespace BusinessLogic {
     // exit the application
     APPLICATION_CAPABILITIES.app.actions.exit,
     APPLICATION_CAPABILITIES.app.actions.listOptions,
+    APPLICATION_CAPABILITIES.app.actions.listExpensesOptions,
 
     // these commands are used to navigate between
     // actions.
@@ -65,7 +68,6 @@ export namespace BusinessLogic {
     APPLICATION_CAPABILITIES.app.history.actions.goForward,
 
     // EXPENSES actions and commands
-    APPLICATION_CAPABILITIES.business.expenses.actions.listOptions,
     APPLICATION_CAPABILITIES.business.expenses.actions.add,
     APPLICATION_CAPABILITIES.business.expenses.actions.edit,
     APPLICATION_CAPABILITIES.business.expenses.actions.remove,

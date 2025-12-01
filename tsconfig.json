@@ -10,6 +10,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "declaration": false,
+    "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {

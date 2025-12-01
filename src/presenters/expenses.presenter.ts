@@ -20,32 +20,38 @@ export default class ExpensesPresenter extends PresenterBase
       await this.view.getUserChoice();
 
     while (
-      command !== APPLICATION_COMMANDS.app.history.actions.goBack
-      && command !== APPLICATION_COMMANDS.app.history.actions.goForward
-      && command !== APPLICATION_COMMANDS.app.actions.exit
+      command !== APPLICATION_COMMANDS.app.actions.exit
+      && command !== APPLICATION_COMMANDS.app.actions.listExpensesOptions
     ) {
       command = await this.dispatchCommand(command);
     }
-
-    // Return to the main menu because we dont have other possible actions 
-    command = APPLICATION_COMMANDS.app.actions.listOptions;
 
     return command;
   }
 
   async dispatchCommand(
-    action: ApplicationActions | ExpensesActions,
+    action: ExpensesActions | ApplicationActions,
   ) {
     switch (action) {
       case APPLICATION_COMMANDS.business.expenses.actions.list: {
-
         const listOfExpenses = await AppContext.commandBus.execute(
           APPLICATION_COMMANDS.business.expenses.commands.list
         )
 
-        await this.view.listExpenses(listOfExpenses);
+        const response = await this.view.listExpenses(listOfExpenses);
 
-        // return APPLICATION_COMMANDS.app.actions.listOptions;
+        if (response.wants_to_add) {
+          return APPLICATION_COMMANDS.business.expenses.actions.add;
+        }
+
+        if (response.history_action) {
+          return response.history_action;
+        }
+
+        // TODO: handle edit/delete based on selected expense id
+        // if (response.selected_expense_id)
+
+        return APPLICATION_COMMANDS.business.expenses.actions.list;
       }
       case APPLICATION_COMMANDS.business.expenses.actions.add:
       case APPLICATION_COMMANDS.business.expenses.actions.edit:
@@ -54,9 +60,10 @@ export default class ExpensesPresenter extends PresenterBase
         return newCommand;
       case APPLICATION_COMMANDS.app.history.actions.goBack:
       case APPLICATION_COMMANDS.app.history.actions.goForward:
-        return this.resolveHistoryCommand(action);
+        const resolvedCommand = this.resolveHistoryCommand(action);
+        return resolvedCommand;
       default:
-        return APPLICATION_COMMANDS.app.actions.exit;
+        return action;
     }
   }
 }

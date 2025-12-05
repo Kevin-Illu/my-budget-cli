@@ -137,7 +137,7 @@ class LinkedList<T> implements Store.SyncStore<T> {
     return this.count;
   }
 
-  bullk(items: T[]): boolean[] {
+  bulk(items: T[]): boolean[] {
     return items.map((item) => this.add(item));
   }
 }

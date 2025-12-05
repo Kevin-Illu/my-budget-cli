@@ -5,20 +5,21 @@
     "start": "tsc && node --watch ./dist/index.js"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
-    "@typescript-eslint/eslint-plugin": "^8.19.0",
-    "@typescript-eslint/parser": "^8.19.0",
-    "acorn": "^8.14.0",
-    "eslint": "^9.17.0",
-    "eslint-config-prettier": "^9.1.0",
+    "@types/node": "^22.19.1",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
+    "acorn": "^8.15.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^9.1.2",
     "eslint-plugin": "^1.0.1",
-    "prettier": "^3.4.2",
-    "typescript": "^5.7.2"
+    "prettier": "^3.7.3",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@inquirer/prompts": "7.2.1",
     "chalk": "5.4.1",
-    "simple-git": "^3.28.0"
+    "menu-resolver": "^2.0.0",
+    "simple-git": "^3.30.0"
   },
-  "packageManager": "pnpm@10.6.2+sha512.47870716bea1572b53df34ad8647b42962bc790ce2bf4562ba0f643237d7302a3d6a8ecef9e4bdfc01d23af1969aa90485d4cebb0b9638fa5ef1daef656f6c1b"
+  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }

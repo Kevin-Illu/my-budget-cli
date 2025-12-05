@@ -12,7 +12,7 @@ export namespace Store {
    * @method find - Find an item in the store
    * @method update - Update an item in the store
    * @method size - Get the size of the store
-   * @method bullk - Add multiple items to the store
+   * @method bulk - Add multiple items to the store
    */
   export interface SyncStore<T> {
     add(item: T): boolean;
@@ -29,7 +29,7 @@ export namespace Store {
 
     size(): number;
 
-    bullk(items: T[]): boolean[];
+    bulk(items: Omit<T, "id">[]): boolean[];
   }
 
   /**

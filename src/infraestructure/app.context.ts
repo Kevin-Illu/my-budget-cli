@@ -13,13 +13,14 @@ import { BusinessLogic } from "../consts";
 import APPLICATION_COMMANDS = BusinessLogic.APPLICATION_CAPABILITIES;
 import { CommandBus } from "./commands/command.bus";
 import { COMMAND_DEFINITIONS } from "../business/commands";
+import { Entities } from "@budgetTypes/entities";
 
 export default class AppContext {
   /**
    * Is used to persist data and allow CRUD capabilities for
    * the application.
    */
-  static store: Store.SyncStore<unknown>;
+  static store: Store.SyncStore<Entities.Expense>;
 
   /**
    * Registry all the commands that execute business logic
@@ -39,7 +40,7 @@ export default class AppContext {
   static historyManager: HistoryManager<ApplicationTypes.ApplicationActions>;
 
   static {
-    this.store = new LinkedList();
+    this.store = new LinkedList<Entities.Expense>();
     this.commandRegistry = new CommandRegistry();
     this.commandBus = new CommandBus(this.commandRegistry);
 
@@ -55,7 +56,7 @@ export default class AppContext {
       { date: '2025-11-06', category: 'Utilities', amount: 60.00, description: 'Electricity bill' },
     ];
 
-    this.store.bullk(expenses);
+    this.store.bulk(expenses);
 
     // Register all commands in the command registry
     for (const [commandName, commandClass] of Object.entries(COMMAND_DEFINITIONS)) {
@@ -69,17 +70,15 @@ export default class AppContext {
   // TODO: Implement (Init, Configure, Dispose) methods if needed
   // for managing the lifecycle of resources.
 
-  static getStore<T>(): Store.SyncStore<T> {
-    return this.store as Store.SyncStore<T>;
+  static getStore() {
+    return this.store;
   }
 
   static getRegistry(): CommandRegistry<Commands.Commands> {
     return this.commandRegistry;
   }
 
-  static getHistoryManager(): HistoryManager<
-    ApplicationTypes.ApplicationActions
-  > {
+  static getHistoryManager() {
     return this.historyManager;
   }
 }

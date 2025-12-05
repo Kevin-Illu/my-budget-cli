@@ -1,11 +1,14 @@
 
 export namespace Entities {
 
-    export interface Expense {
+    export type Expense = {
         id: string;
-        description: Date;
+        category: string;
         amount: number;
-        date: Date;
+        description: string;
+        date: string;
     }
+
+    export type NewExpense = Omit<Expense, 'id'>
 
 }

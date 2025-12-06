@@ -7,6 +7,8 @@ class Application {
 
   async start() {
     while (true) {
+      console.clear();
+
       const options = this.menu.getDisplayableMenu();
       const selectableMenu = this.getSelectableMenu(options);
       const result = await this.showSelect(selectableMenu);

@@ -19,34 +19,34 @@ export class AppMenu {
   private tree: Menu<InquirerListItem>[] = [
     {
       data: {
-        name: "Manage expenses",
+        name: "* Manage expenses",
         value: APPLICATION_ACTIONS.listExpensesOptions,
         description: "Just manage your expenses",
       },
       children: [
         {
           data: {
-            name: "Create a new expense",
+            name: "* Create a new expense",
             value: EXPENSES_ACTIONS.add,
           },
           resolve: EXPENSES_COMMANDS.add,
         },
         {
           data: {
-            name: "Edit the amount of the expense",
+            name: "* Edit the amount of the expense",
             value: EXPENSES_ACTIONS.edit,
           },
           resolve: EXPENSES_ACTIONS.edit,
         },
         {
           data: {
-            name: "Delete expense",
+            name: "* Delete expense",
           },
           resolve: EXPENSES_ACTIONS.remove,
         },
         {
           data: {
-            name: "List of expenses",
+            name: "* List of expenses",
           },
           resolve: EXPENSES_ACTIONS.list,
         },
@@ -64,45 +64,45 @@ export class AppMenu {
     },
     {
       data: {
-        name: "Configuration",
+        name: "* Configuration",
         description: "Just configuration",
       },
       children: [
         {
           data: {
-            name: "Choose the curren storage method",
+            name: "* Choose the curren storage method",
           },
           children: [
             {
               data: {
-                name: "LinkedList storage",
+                name: "* LinkedList storage",
                 description: "This method only save change in memory",
               },
               resolve: (api) => {
                 // TODO: save the selection
-                api.choose(api.currentNode.id);
+                api.goBack();
                 api.goBack();
               },
             },
             {
               data: {
-                name: "JSON storage",
+                name: "* JSON storage",
                 description: "This method save change in a JSON file",
               },
               resolve: (api) => {
                 // TODO: save the selection
-                api.choose(api.currentNode.id);
+                api.goBack();
                 api.goBack();
               },
             },
             {
               data: {
-                name: "SQLite Storage",
+                name: "* SQLite Storage",
                 description: "This method save change in a SQLite database",
               },
               resolve: (api) => {
                 // TODO: save the selection
-                api.choose(api.currentNode.id);
+                api.goBack();
                 api.goBack();
               },
             },

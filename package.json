@@ -1,8 +1,6 @@
 {
   "scripts": {
-    "build": "tsc --build",
-    "watch": "tsc --watch",
-    "start": "tsc && node --watch ./dist/index.js"
+    "start": "bun --watch ./src/index.ts"
   },
   "devDependencies": {
     "@types/node": "^22.19.1",
@@ -12,14 +10,14 @@
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin": "^1.0.1",
-    "prettier": "^3.7.3",
+    "prettier": "^3.7.4",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@inquirer/prompts": "7.2.1",
     "chalk": "5.4.1",
-    "menu-resolver": "^2.0.0",
-    "simple-git": "^3.30.0"
+    "menu-resolver": "3.0.0",
+    "simple-git": "3.30.0"
   },
   "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }

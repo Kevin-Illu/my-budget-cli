@@ -57,7 +57,6 @@ export class AppMenu {
           },
           resolve: (api) => {
             api.goBack();
-            api.goBack();
           },
         },
       ],
@@ -81,7 +80,6 @@ export class AppMenu {
               resolve: (api) => {
                 // TODO: save the selection
                 api.goBack();
-                api.goBack();
               },
             },
             {
@@ -91,7 +89,6 @@ export class AppMenu {
               },
               resolve: (api) => {
                 // TODO: save the selection
-                api.goBack();
                 api.goBack();
               },
             },
@@ -103,7 +100,6 @@ export class AppMenu {
               resolve: (api) => {
                 // TODO: save the selection
                 api.goBack();
-                api.goBack();
               },
             },
             {
@@ -112,7 +108,6 @@ export class AppMenu {
                 description: "Just go back",
               },
               resolve: ({ goBack, currentNode, choose }) => {
-                goBack();
                 goBack();
               },
             },
@@ -124,7 +119,6 @@ export class AppMenu {
             description: "Just go back",
           },
           resolve: ({ goBack, currentNode, choose }) => {
-            goBack();
             goBack();
           },
         },
@@ -141,7 +135,7 @@ export class AppMenu {
   menu: TreeMenuResolver;
 
   constructor() {
-    this.menu = new TreeMenuResolver(this.tree);
+    this.menu = new TreeMenuResolver(this.tree, { injectIdKey: "value" });
   }
 }
 

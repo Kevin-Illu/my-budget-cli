@@ -10,8 +10,7 @@ class Application {
       console.clear();
 
       const options = this.menu.getDisplayableMenu();
-      const selectableMenu = this.getSelectableMenu(options);
-      const result = await this.showSelect(selectableMenu);
+      const result = await this.showSelect(options);
       const action = this.menu.choose(result);
 
       if (typeof action?.resolve === "function") {
@@ -27,10 +26,6 @@ class Application {
     });
 
     return result as string;
-  }
-
-  getSelectableMenu(options: { id: string; data?: any }[]) {
-    return options.map((o) => ({ ...o?.data, value: o.id }));
   }
 }
 

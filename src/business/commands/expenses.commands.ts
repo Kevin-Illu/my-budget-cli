@@ -1,8 +1,0 @@
-import { Infrastructure } from "@budgetTypes/infrastructure";
-import AppContext from "../../infraestructure/app.context";
-
-export class GetExpensesCommand implements Infrastructure.Command<any[]> {
-  async execute() {
-    return AppContext.getStore().getAll();
-  }
-}

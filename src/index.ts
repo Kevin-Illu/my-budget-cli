@@ -1,11 +1,21 @@
-class App {
-  start() {}
+import { Logger } from "./logger";
+import { Settings } from "./settings";
 
-  init() {
-    // initialize the creation of the default files
-    // like the settings, log files
-    // load those files and keep them on the state
-    // Initialize the state
-    // run the UI
+class App {
+  logger: Logger;
+  settings: Settings;
+
+  start() {
+    this.init();
+  }
+
+  async init() {
+    this.logger = new Logger();
+    await this.logger.init();
+
+    this.settings = new Settings(this.logger);
+    await this.settings.init();
   }
 }
+
+new App().start();

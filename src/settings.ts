@@ -19,7 +19,7 @@ export class Settings {
 
     if (!exist) {
       const result = await TryCatch.run(() =>
-        Bun.write(this.settingsfilepath, JSON.stringify(DEFAULT_SETTINGS)),
+        Bun.write(this.settingsfilepath, this.prettifyJSON(DEFAULT_SETTINGS)),
       );
 
       if (result.isError()) {
@@ -27,12 +27,17 @@ export class Settings {
         this.settings = DEFAULT_SETTINGS;
         return;
       }
+
+      this.settings = DEFAULT_SETTINGS;
+      return;
     }
 
     const readResult = await TryCatch.run(() => settings.json());
 
     if (readResult.isError()) {
-      this.logger.error("Failed to read settings file", readResult.error);
+      this.logger.error("Failed to read settings file", readResult.error, {
+        context: readResult.error.stack,
+      });
       this.settings = DEFAULT_SETTINGS;
       return;
     }
@@ -46,5 +51,28 @@ export class Settings {
     }
 
     this.settings = result.data;
+  }
+
+  async save(settings: TSettings) {
+    const newSettings = {
+      ...this.settings,
+      ...settings,
+    };
+
+    const result = await TryCatch.run(() =>
+      Bun.write(this.settingsfilepath, this.prettifyJSON(newSettings)),
+    );
+
+    if (result.isError()) {
+      this.logger.error("Failed to save settings file", result.error);
+      return;
+    }
+
+    this.logger.info("Settings file was successfully saved");
+    this.settings = newSettings;
+  }
+
+  private prettifyJSON(value: { [key: string]: any }) {
+    return JSON.stringify(value, null, 2) + "\n";
   }
 }

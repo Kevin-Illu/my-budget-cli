@@ -14,7 +14,7 @@ export type TSettings = z.infer<typeof SETTINGS>;
 
 export const FILE_PATHS = {
   logfilepath: "./budget.logs.txt",
-  settingsfilepath: "/budget.settings.json",
+  settingsfilepath: "./budgetrc.json",
 };
 
 // desribe the type of logs the app has

@@ -14,7 +14,7 @@ export class Logger {
     try {
       const file = Bun.file(this.logFilePath);
       if (!(await file.exists())) {
-        await this.info("First launch");
+        await this.info("Logger initialized successfully");
       }
     } catch {
       console.error("Logger initialization failed");

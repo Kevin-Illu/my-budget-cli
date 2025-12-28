@@ -5,15 +5,17 @@ class App {
   logger: Logger;
   settings: Settings;
 
+  constructor() {
+    this.logger = new Logger();
+    this.settings = new Settings(this.logger);
+  }
+
   start() {
     this.init();
   }
 
   async init() {
-    this.logger = new Logger();
     await this.logger.init();
-
-    this.settings = new Settings(this.logger);
     await this.settings.init();
   }
 }

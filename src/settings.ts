@@ -50,6 +50,7 @@ export class Settings {
       return;
     }
 
+    this.logger.info("The settings was successfully loaded");
     this.settings = result.data;
   }
 

@@ -2,16 +2,13 @@ import { Logger } from "./logger";
 import { Settings } from "./settings";
 
 class App {
-  logger: Logger;
-  settings: Settings;
+  constructor(
+    private logger: Logger,
+    private settings: Settings,
+  ) {}
 
-  constructor() {
-    this.logger = new Logger();
-    this.settings = new Settings(this.logger);
-  }
-
-  start() {
-    this.init();
+  async start() {
+    await this.init();
   }
 
   async init() {
@@ -20,4 +17,7 @@ class App {
   }
 }
 
-new App().start();
+const logger = new Logger();
+const settings = new Settings(logger);
+
+new App(logger, settings).start();

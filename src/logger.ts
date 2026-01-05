@@ -1,4 +1,5 @@
 import { FILE_PATHS, LogLevel, type TLogLevel } from "./const";
+import TryCatch from "./result";
 
 type LogPayload = {
   message: string;
@@ -11,14 +12,20 @@ export class Logger {
   private readonly logFilePath = FILE_PATHS.logfilepath;
 
   async init(): Promise<void> {
-    try {
-      const file = Bun.file(this.logFilePath);
-      if (!(await file.exists())) {
-        await this.info("Logger initialized successfully");
-      }
-    } catch {
+    const result = await TryCatch.run(() => Bun.file(this.logFilePath));
+
+    if (result.isError()) {
       console.error("Logger initialization failed");
+      return;
     }
+
+    const file = result.value;
+
+    if (!(await file.exists())) {
+      await this.info("Logger initialized successfully");
+    }
+
+    this.info("Loggin is ready");
   }
 
   async log({
@@ -27,20 +34,23 @@ export class Logger {
     error,
     context,
   }: LogPayload): Promise<void> {
-    try {
-      const timestamp = new Date().toISOString();
+    const timestamp = new Date().toISOString();
 
-      const parts = [
-        `[${level} | ${timestamp}]`,
-        message,
-        error ? this.formatError(error) : null,
-        context ? JSON.stringify(context) : null,
-      ].filter(Boolean);
+    const parts = [
+      `[${level}]`,
+      `[${timestamp}]`,
+      message,
+      error ? this.formatError(error) : null,
+      context ? JSON.stringify(context) : null,
+    ].filter(Boolean);
 
-      const logMessage = parts.join(" | ") + "\n";
+    const logMessage = parts.join(" | ") + "\n";
 
-      await Bun.write(this.logFilePath, logMessage);
-    } catch {
+    const result = await TryCatch.run(() =>
+      Bun.write(this.logFilePath, logMessage),
+    );
+
+    if (result.isError()) {
       console.error("Failed to write log entry");
     }
   }

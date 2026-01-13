@@ -13,8 +13,8 @@ export const SETTINGS = z.object({
 export type TSettings = z.infer<typeof SETTINGS>;
 
 export const FILE_PATHS = {
-  logfilepath: "./budget.logs.txt",
-  settingsfilepath: "./budgetrc.json",
+  logfilepath: "./data/budget.logs.txt",
+  settingsfilepath: "./data/budgetrc.json",
 };
 
 // desribe the type of logs the app has

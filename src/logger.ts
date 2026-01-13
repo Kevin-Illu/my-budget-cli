@@ -1,5 +1,6 @@
 import { FILE_PATHS, LogLevel, type TLogLevel } from "./const";
 import TryCatch from "./result";
+import File from "./file.io";
 
 type LogPayload = {
   message: string;
@@ -12,20 +13,31 @@ export class Logger {
   private readonly logFilePath = FILE_PATHS.logfilepath;
 
   async init(): Promise<void> {
-    const result = await TryCatch.run(() => Bun.file(this.logFilePath));
+    const result = await File.file(this.logFilePath);
 
     if (result.isError()) {
-      console.error("Logger initialization failed");
+      throw result.error;
+    }
+
+    const logFile = result.value;
+    const exist = await logFile.exists();
+
+    if (!exist) {
+      await File.write(
+        this.logFilePath,
+        "------------ [LOGGER INICIALICED] ------------\n",
+      );
+
+      this.log({
+        level: "INFO",
+        message: "The logs file was created successfully",
+      });
+
       return;
     }
 
-    const file = result.value;
-
-    if (!(await file.exists())) {
-      await this.info("Logger initialized successfully");
-    }
-
-    this.info("Loggin is ready");
+    this.newLine();
+    this.info("STARTING LOGGIN");
   }
 
   async log({
@@ -46,12 +58,11 @@ export class Logger {
 
     const logMessage = parts.join(" | ") + "\n";
 
-    const result = await TryCatch.run(() =>
-      Bun.write(this.logFilePath, logMessage),
-    );
+    const result = await File.append(this.logFilePath, logMessage);
 
     if (result.isError()) {
       console.error("Failed to write log entry");
+      throw result.error;
     }
   }
 
@@ -76,5 +87,9 @@ export class Logger {
       return `${error.name}: ${error.message}\n${error.stack ?? ""}`;
     }
     return String(error);
+  }
+
+  private async newLine() {
+    await File.append(this.logFilePath, "\n");
   }
 }

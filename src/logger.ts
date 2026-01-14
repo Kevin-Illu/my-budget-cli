@@ -29,7 +29,7 @@ export class Logger {
       );
 
       this.log({
-        level: "INFO",
+        level: LogLevel.error,
         message: "The logs file was created successfully",
       });
 

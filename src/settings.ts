@@ -1,3 +1,4 @@
+import z from "zod";
 import {
   DEFAULT_SETTINGS,
   FILE_PATHS,
@@ -55,10 +56,11 @@ export class Settings {
     const result = SETTINGS.safeParse(readResult.value);
 
     if (!result.success) {
-      this.logger.error("Invalid settings file", result.error);
       this.settings = DEFAULT_SETTINGS;
+      const err = z.treeifyError(result.error, (e) => e.message).properties;
 
-      throw result.error;
+      this.logger.error("Invalid settings file", this.prettifyJSON(err));
+      throw err;
     }
 
     this.logger.info("The settings was successfully loaded");
@@ -71,8 +73,9 @@ export class Settings {
       ...settings,
     };
 
-    const result = await TryCatch.run(() =>
-      Bun.write(this.settingsfilepath, this.prettifyJSON(newSettings)),
+    const result = await File.write(
+      this.settingsfilepath,
+      this.prettifyJSON(newSettings),
     );
 
     if (result.isError()) {

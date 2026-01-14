@@ -5,9 +5,10 @@ export const DEFAULT_SETTINGS = {
 };
 
 export const SETTINGS = z.object({
-  store: z
-    .string()
-    .nonempty("the store can be default | sqllite | file system"),
+  store: z.union(
+    [z.literal("sqlite"), z.literal("json"), z.literal("memory")],
+    { error: "the store can be sqlite | json | memory" },
+  ),
 });
 
 export type TSettings = z.infer<typeof SETTINGS>;

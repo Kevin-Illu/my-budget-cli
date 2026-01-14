@@ -14,6 +14,8 @@ class App {
   async init() {
     await this.logger.init();
     await this.settings.init();
+
+    await this.settings.save({ ...this.settings.settings, store: "memory" });
   }
 }
 

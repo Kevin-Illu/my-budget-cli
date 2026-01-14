@@ -1,7 +1,7 @@
 import z from "zod";
 
-export const DEFAULT_SETTINGS = {
-  store: "default",
+export const DEFAULT_SETTINGS: TSettings = {
+  store: "sqlite",
 };
 
 export const SETTINGS = z.object({

@@ -1,25 +1,22 @@
 import z from "zod";
-import {
-  DEFAULT_SETTINGS,
-  FILE_PATHS,
-  SETTINGS,
-  type TSettings,
-} from "./const";
 import File from "./file.io";
-import { Logger } from "./logger";
 import TryCatch from "./result";
+import { appconfig, type TSettings } from "./constants";
+import Logger from "./logger";
+
+const { DEFAULT_SETTINGS, FILE_PATHS, SETTINGS } = appconfig;
 
 export class Settings {
   public settingsfilepath = FILE_PATHS.settingsfilepath;
   public settings: TSettings;
 
-  constructor(private readonly logger: Logger) {}
+  constructor() {}
 
   async init() {
     const settings = await File.file(this.settingsfilepath);
 
     if (settings.isError()) {
-      this.logger.error("Error open the settings file", settings.error);
+      Logger.error("Error open the settings file", settings.error);
     }
 
     const settingsFile = settings.value;
@@ -32,12 +29,12 @@ export class Settings {
       );
 
       if (result.isError()) {
-        this.logger.error(`Cannot create the settings file`, result.error);
+        Logger.error(`Cannot create the settings file`, result.error);
         this.settings = DEFAULT_SETTINGS;
         return;
       }
 
-      this.logger.info("The settings file was created successfully");
+      Logger.info("The settings file was created successfully");
 
       this.settings = DEFAULT_SETTINGS;
       return;
@@ -46,7 +43,7 @@ export class Settings {
     const readResult = await TryCatch.run(() => settingsFile.json());
 
     if (readResult.isError()) {
-      this.logger.error("Failed to read settings file", readResult.error, {
+      Logger.error("Failed to read settings file", readResult.error, {
         context: readResult.error.stack,
       });
       this.settings = DEFAULT_SETTINGS;
@@ -59,11 +56,11 @@ export class Settings {
       this.settings = DEFAULT_SETTINGS;
       const err = z.treeifyError(result.error, (e) => e.message).properties;
 
-      this.logger.error("Invalid settings file", this.prettifyJSON(err));
+      Logger.error("Invalid settings file", this.prettifyJSON(err));
       throw err;
     }
 
-    this.logger.info("The settings was successfully loaded");
+    Logger.info("The settings was successfully loaded");
     this.settings = result.data;
   }
 
@@ -79,11 +76,11 @@ export class Settings {
     );
 
     if (result.isError()) {
-      this.logger.error("Failed to save settings file", result.error);
+      Logger.error("Failed to save settings file", result.error);
       return;
     }
 
-    this.logger.info("Settings file was successfully saved");
+    Logger.info("Settings file was successfully saved");
     this.settings = newSettings;
   }
 

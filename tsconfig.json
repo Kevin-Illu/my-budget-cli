@@ -14,16 +14,9 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      "@budgetTypes/*": [
-        "./src/types/*"
-      ]
-    },
+      "@budgetTypes/*": ["./src/types/*"]
+    }
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

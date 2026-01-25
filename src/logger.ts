@@ -1,6 +1,6 @@
-import { FILE_PATHS, LogLevel, type TLogLevel } from "./const";
-import TryCatch from "./result";
 import File from "./file.io";
+import { appconfig, type TLogLevel } from "./constants";
+const { FILE_PATHS, LogLevel } = appconfig;
 
 type LogPayload = {
   message: string;
@@ -9,10 +9,14 @@ type LogPayload = {
   context?: Record<string, unknown>;
 };
 
-export class Logger {
-  private readonly logFilePath = FILE_PATHS.logfilepath;
+export default class Logger {
+  static readonly logFilePath = FILE_PATHS.logfilepath;
 
-  async init(): Promise<void> {
+  static {
+    Logger.init();
+  }
+
+  static async init(): Promise<void> {
     const result = await File.file(this.logFilePath);
 
     if (result.isError()) {
@@ -40,7 +44,7 @@ export class Logger {
     this.info("STARTING LOGGIN");
   }
 
-  async log({
+  static async log({
     message,
     level = LogLevel.info,
     error,
@@ -66,30 +70,34 @@ export class Logger {
     }
   }
 
-  info(message: string, context?: Record<string, unknown>) {
+  static info(message: string, context?: Record<string, unknown>) {
     return this.log({ message, level: LogLevel.info, context });
   }
 
-  warn(message: string, context?: Record<string, unknown>) {
+  static warn(message: string, context?: Record<string, unknown>) {
     return this.log({ message, level: LogLevel.warn, context });
   }
 
-  error(message: string, error?: unknown, context?: Record<string, unknown>) {
+  static error(
+    message: string,
+    error?: unknown,
+    context?: Record<string, unknown>,
+  ) {
     return this.log({ message, level: LogLevel.error, error, context });
   }
 
-  internal(message: string, context?: Record<string, unknown>) {
+  static internal(message: string, context?: Record<string, unknown>) {
     return this.log({ message, level: LogLevel.internal, context });
   }
 
-  private formatError(error: unknown): string {
+  static formatError(error: unknown): string {
     if (error instanceof Error) {
       return `${error.name}: ${error.message}\n${error.stack ?? ""}`;
     }
     return String(error);
   }
 
-  private async newLine() {
+  static async newLine() {
     await File.append(this.logFilePath, "\n");
   }
 }

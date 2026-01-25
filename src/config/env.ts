@@ -1,9 +1,7 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  NODE_ENV: z
-    .enum(["development", "test", "production"])
-    .default("development"),
+  NODE_ENV: z.enum(["dev", "prod"]).default("dev"),
   // Allow overriding paths via ENV, but provide defaults
   LOG_FILE_PATH: z.string().default("./data/budget.logs.txt"),
   SETTINGS_FILE_PATH: z.string().default("./data/budgetrc.json"),

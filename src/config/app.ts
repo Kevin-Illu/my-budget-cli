@@ -1,4 +1,5 @@
 import z from "zod";
+import { env } from "./env";
 
 /**
  * @description all the app config files the app needs to know internally
@@ -11,9 +12,9 @@ export module appconfig {
    * to operate correctly.
    */
   export const FILE_PATHS = {
-    logfilepath: "./data/budget.logs.txt",
-    settingsfilepath: "./data/budgetrc.json",
-    databasepath: "./data/budgetdb.sqlite",
+    logfilepath: env.LOG_FILE_PATH,
+    settingsfilepath: env.SETTINGS_FILE_PATH,
+    databasepath: env.DATABASE_PATH,
   };
 
   /**
@@ -21,14 +22,14 @@ export module appconfig {
    * not exist
    */
   export const DEFAULT_SETTINGS: TSettings = {
-    store: "sqlite",
+    store: env.STORE_TYPE as TSettings["store"],
   };
 
   /**
    * It's used to check the user settings file is ok and it not
    * contains any typo or a invented options or wherever that is not allowed by me
    */
-  export const SETTINGS = z.object({
+  export const SettingsSchema = z.object({
     store: z.union(
       [z.literal("sqlite"), z.literal("json"), z.literal("memory")],
       { error: "the store can be sqlite | json | memory" },
@@ -53,7 +54,7 @@ export module appconfig {
 /**
  * The type used to ensure type checks.
  */
-export type TSettings = z.infer<typeof appconfig.SETTINGS>;
+export type TSettings = z.infer<typeof appconfig.SettingsSchema>;
 
 /**
  * Give me autocompletition of the logLevels my app has :)

@@ -18,3 +18,11 @@ logs
 
 # app settings and logs
 data/
+
+# enviroment variables
+.env
+.env.prod
+.env.dev
+
+# dev files
+test/

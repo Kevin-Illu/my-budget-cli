@@ -1,7 +1,7 @@
 import z from "zod";
 import File from "./file.io";
 import TryCatch from "./result";
-import { appconfig, type TSettings } from "./constants";
+import { appconfig, type TSettings } from "./config/app";
 import Logger from "./logger";
 
 const { DEFAULT_SETTINGS, FILE_PATHS, SETTINGS } = appconfig;
@@ -9,8 +9,6 @@ const { DEFAULT_SETTINGS, FILE_PATHS, SETTINGS } = appconfig;
 export class Settings {
   public settingsfilepath = FILE_PATHS.settingsfilepath;
   public settings: TSettings;
-
-  constructor() {}
 
   async init() {
     const settings = await File.file(this.settingsfilepath);

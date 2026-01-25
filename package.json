@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "bun --watch ./src/index.ts"
+    "start": "bun --env-file=.env.prod bun run ./src/index.ts",
+    "dev": "bun --env-file=.env.dev run src/dev/index.dev.ts"
   },
   "devDependencies": {
     "@types/node": "^22.19.3",

@@ -1,5 +1,5 @@
 import File from "./file.io";
-import { appconfig, type TLogLevel } from "./constants";
+import { appconfig, type TLogLevel } from "./config/app";
 const { FILE_PATHS, LogLevel } = appconfig;
 
 type LogPayload = {

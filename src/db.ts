@@ -1,5 +1,5 @@
 import { Database } from "bun:sqlite";
-import { appconfig } from "./constants";
+import { appconfig } from "./config/app";
 import Logger from "./logger";
 import { Models } from "./budget/models";
 const { FILE_PATHS } = appconfig;

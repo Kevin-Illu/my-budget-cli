@@ -1,26 +1,25 @@
 import { Database } from "bun:sqlite";
 import { appconfig } from "./config/app";
 import Logger from "./logger";
-import { Models } from "./budget/models";
 const { FILE_PATHS } = appconfig;
 
 export default abstract class DB {
   static db: Database;
 
-  static {
+  static async init() {
+    Logger.info("Initializing database...");
+
     this.db = new Database(FILE_PATHS.databasepath, {
       strict: true,
       create: true,
     });
-  }
 
-  async init() {
-    Logger.info("Initializing database...");
-    DB.db.run("PRAGMA foreign_keys = ON;");
+    this.db.run("PRAGMA foreign_keys = ON;");
     await this.createSchema();
   }
 
-  async createSchema() {
+  static async createSchema() {
+    Logger.info("Creating database schema...");
     const schema = `
       CREATE TABLE IF NOT EXISTS categorias (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,12 +63,5 @@ export default abstract class DB {
 
     DB.db.run(schema);
     Logger.info("The database is ready");
-  }
-
-  listarPresupuestos(): Models.Presupuesto[] {
-    const query = DB.db
-      .query("SELECT * FROM presupuestos")
-      .as(Models.Presupuesto);
-    return query.all();
   }
 }

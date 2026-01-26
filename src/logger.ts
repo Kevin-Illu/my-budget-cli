@@ -12,10 +12,6 @@ type LogPayload = {
 export default class Logger {
   static readonly logFilePath = FILE_PATHS.logfilepath;
 
-  static {
-    Logger.init();
-  }
-
   static async init(): Promise<void> {
     const result = await File.file(this.logFilePath);
 

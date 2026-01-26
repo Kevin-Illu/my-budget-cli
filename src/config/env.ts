@@ -1,13 +1,25 @@
 import { z } from "zod";
+import { StringModule } from "../utils/string";
 
-const envSchema = z.object({
-  NODE_ENV: z.enum(["dev", "prod"]).default("dev"),
-  // Allow overriding paths via ENV, but provide defaults
-  LOG_FILE_PATH: z.string().default("./data/budget.logs.txt"),
-  SETTINGS_FILE_PATH: z.string().default("./data/budgetrc.json"),
-  DATABASE_PATH: z.string().default("./data/budgetdb.sqlite"),
-  // The store type (sqlite, json, memory)
-  STORE_TYPE: z.enum(["sqlite", "json", "memory"]).default("sqlite"),
-});
+export default abstract class Env {
+  static envSchema = z.object({
+    NODE_ENV: z.enum(["dev", "prod"]),
+    LOG_FILE_PATH: z.string(),
+    SETTINGS_FILE_PATH: z.string(),
+    DATABASE_PATH: z.string(),
+    STORE_TYPE: z.enum(["sqlite", "json", "memory"]),
+  });
 
-export const env = envSchema.parse(process.env);
+  static env: z.infer<typeof this.envSchema>;
+
+  static init() {
+    const result = this.envSchema.safeParse(process.env);
+
+    if (!result.success) {
+      const err = z.treeifyError(result.error, (e) => e.message).properties;
+      throw Error(StringModule.prettifyJSON(err));
+    }
+
+    this.env = result.data;
+  }
+}

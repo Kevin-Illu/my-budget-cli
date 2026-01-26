@@ -1,5 +1,5 @@
 import z from "zod";
-import { env } from "./env";
+import Env from "./env";
 
 /**
  * @description all the app config files the app needs to know internally
@@ -12,9 +12,9 @@ export module appconfig {
    * to operate correctly.
    */
   export const FILE_PATHS = {
-    logfilepath: env.LOG_FILE_PATH,
-    settingsfilepath: env.SETTINGS_FILE_PATH,
-    databasepath: env.DATABASE_PATH,
+    logfilepath: Env.env.LOG_FILE_PATH,
+    settingsfilepath: Env.env.SETTINGS_FILE_PATH,
+    databasepath: Env.env.DATABASE_PATH,
   };
 
   /**
@@ -22,7 +22,7 @@ export module appconfig {
    * not exist
    */
   export const DEFAULT_SETTINGS: TSettings = {
-    store: env.STORE_TYPE as TSettings["store"],
+    store: Env.env.STORE_TYPE as TSettings["store"],
   };
 
   /**

@@ -3,8 +3,9 @@ import File from "./file.io";
 import TryCatch from "./result";
 import { appconfig, type TSettings } from "./config/app";
 import Logger from "./logger";
+import { StringModule } from "./utils/string";
 
-const { DEFAULT_SETTINGS, FILE_PATHS, SETTINGS } = appconfig;
+const { DEFAULT_SETTINGS, FILE_PATHS, SettingsSchema } = appconfig;
 
 export class Settings {
   public settingsfilepath = FILE_PATHS.settingsfilepath;
@@ -23,7 +24,7 @@ export class Settings {
     if (!exist) {
       const result = await File.write(
         this.settingsfilepath,
-        this.prettifyJSON(DEFAULT_SETTINGS),
+        StringModule.prettifyJSON(DEFAULT_SETTINGS),
       );
 
       if (result.isError()) {
@@ -48,13 +49,13 @@ export class Settings {
       return;
     }
 
-    const result = SETTINGS.safeParse(readResult.value);
+    const result = SettingsSchema.safeParse(readResult.value);
 
     if (!result.success) {
       this.settings = DEFAULT_SETTINGS;
       const err = z.treeifyError(result.error, (e) => e.message).properties;
 
-      Logger.error("Invalid settings file", this.prettifyJSON(err));
+      Logger.error("Invalid settings file", StringModule.prettifyJSON(err));
       throw err;
     }
 
@@ -70,7 +71,7 @@ export class Settings {
 
     const result = await File.write(
       this.settingsfilepath,
-      this.prettifyJSON(newSettings),
+      StringModule.prettifyJSON(newSettings),
     );
 
     if (result.isError()) {
@@ -80,9 +81,5 @@ export class Settings {
 
     Logger.info("Settings file was successfully saved");
     this.settings = newSettings;
-  }
-
-  private prettifyJSON(value: { [key: string]: any }) {
-    return JSON.stringify(value, null, 2) + "\n";
   }
 }

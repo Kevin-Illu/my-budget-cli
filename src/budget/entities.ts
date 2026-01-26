@@ -3,20 +3,14 @@ import { Models } from "./models";
 
 export module Entities {
   export class Gastos {
-    private db;
-
-    constructor() {
-      this.db = DB.db;
-    }
-
     obtenerGastoCompleto(id: number): Models.Gasto | null {
-      const gasto = this.db
+      const gasto = DB.db
         .query("SELECT * FROM gastos WHERE id = ?")
         .as(Models.Gasto)
         .get(id);
 
       if (gasto) {
-        gasto.categorias = this.db
+        gasto.categorias = DB.db
           .query(
             `
       SELECT c.* FROM categorias c
@@ -28,7 +22,7 @@ export module Entities {
           .all(id);
 
         // Buscamos sus presupuestos
-        gasto.presupuestos = this.db
+        gasto.presupuestos = DB.db
           .query(
             `
           SELECT p.* FROM presupuestos p
@@ -50,8 +44,8 @@ export module Entities {
       categoriaIds: number[];
       presupuestoIds: number[];
     }) {
-      const transaction = this.db.transaction((g) => {
-        const insertGasto = this.db
+      const transaction = DB.db.transaction((g) => {
+        const insertGasto = DB.db
           .prepare(
             "INSERT INTO gastos (nombre, monto, fecha) VALUES ($nombre, $monto, $fecha)",
           )
@@ -64,7 +58,7 @@ export module Entities {
         const gastoId = insertGasto.lastInsertRowid as number;
 
         // vincular categoria
-        const vincularCat = this.db.prepare(
+        const vincularCat = DB.db.prepare(
           "INSERT INTO gastos_categorias (gasto_id, categoria_id) VALUES (?, ?)",
         );
 
@@ -73,7 +67,7 @@ export module Entities {
         }
 
         // 3. Vincular con presupuestos
-        const vincularPres = this.db.prepare(
+        const vincularPres = DB.db.prepare(
           "INSERT INTO gastos_presupuestos (gasto_id, presupuesto_id) VALUES (?, ?)",
         );
 
@@ -98,7 +92,7 @@ export module Entities {
       GROUP BY g.id
       ORDER BY g.fecha DESC
     `;
-      return this.db.query(sql).as(Models.Gasto).all();
+      return DB.db.query(sql).as(Models.Gasto).all();
     }
 
     actualizarGasto(
@@ -111,8 +105,8 @@ export module Entities {
         presupuestoIds: number[];
       },
     ) {
-      const operacion = this.db.transaction((g) => {
-        this.db
+      const operacion = DB.db.transaction((g) => {
+        DB.db
           .prepare(
             `
         UPDATE gastos 
@@ -127,19 +121,19 @@ export module Entities {
             $fecha: g.fecha,
           });
 
-        this.db
+        DB.db
           .prepare("DELETE FROM gastos_categorias WHERE gasto_id = ?")
           .run(id);
-        this.db
+        DB.db
           .prepare("DELETE FROM gastos_presupuestos WHERE gasto_id = ?")
           .run(id);
 
-        const vincularCat = this.db.prepare(
+        const vincularCat = DB.db.prepare(
           "INSERT INTO gastos_categorias (gasto_id, categoria_id) VALUES (?, ?)",
         );
         g.categoriaIds.forEach((catId) => vincularCat.run(id, catId));
 
-        const vincularPres = this.db.prepare(
+        const vincularPres = DB.db.prepare(
           "INSERT INTO gastos_presupuestos (gasto_id, presupuesto_id) VALUES (?, ?)",
         );
         g.presupuestoIds.forEach((presId) => vincularPres.run(id, presId));
@@ -151,9 +145,18 @@ export module Entities {
     }
 
     eliminarGasto(id: number) {
-      return this.db
+      return DB.db
         .prepare("DELETE FROM gastos WHERE id = $id")
         .run({ $id: id });
+    }
+  }
+
+  export class Presupuesto {
+    listarPresupuestos(): Models.Presupuesto[] {
+      const query = DB.db
+        .query("SELECT * FROM presupuestos")
+        .as(Models.Presupuesto);
+      return query.all();
     }
   }
 }

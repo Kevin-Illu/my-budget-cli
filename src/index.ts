@@ -1,20 +1,11 @@
+import Env from "./config/env";
+import DB from "./db";
 import Logger from "./logger";
-import { Settings } from "./settings";
 
-class App {
-  constructor(private settings: Settings) {}
+Env.init();
+Logger.init();
+DB.init();
 
-  async start() {
-    await this.init();
-  }
-
-  async init() {
-    await this.settings.init();
-
-    await this.settings.save({ ...this.settings.settings, store: "memory" });
-  }
+if (Env.env.NODE_ENV === "dev") {
+  Logger.internal("-----[DEV MODE ACTIVATED]-----");
 }
-
-const settings = new Settings();
-
-new App(settings).start();

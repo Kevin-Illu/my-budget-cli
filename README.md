@@ -9,7 +9,7 @@
 
 I hope I finish this project by the end of the year
 
-# VMP
+# MVP v1
 
 [ ] Add income.
 [ ] Add expense.

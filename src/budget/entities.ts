@@ -1,7 +1,7 @@
 import DB from "../db";
 import { Models } from "./models";
 
-export module Entities {
+export namespace Entities {
   export class Gastos {
     obtenerGastoCompleto(id: number): Models.Gasto | null {
       const gasto = DB.db

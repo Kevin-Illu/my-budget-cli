@@ -1,4 +1,4 @@
-export module StringModule {
+export namespace StringModule {
   /**
    * Used to format a JSON into a formatted string
    * @param value your JSON prettifyed

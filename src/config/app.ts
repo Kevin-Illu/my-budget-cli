@@ -5,7 +5,7 @@ import Env from "./env";
  * @description all the app config files the app needs to know internally
  * like his own cofiguration or where to save the logs or whatever it needs.
  */
-export module appconfig {
+export namespace appconfig {
   /**
    * @constant FILE_PATHS
    * @description A list of paths where my app can found config,log,databse files

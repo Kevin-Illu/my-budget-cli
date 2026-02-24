@@ -1,4 +1,4 @@
-export module Models {
+export namespace Models {
   export class Categoria {
     id!: number;
     nombre!: string;

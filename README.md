@@ -11,6 +11,6 @@ I hope I finish this project by the end of the year
 
 # MVP v1
 
-[ ] Add income.
-[ ] Add expense.
-[ ] Create a balance.
+- [ ] Add income.
+- [ ] Add expense.
+- [ ] Create a balance.

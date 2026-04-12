@@ -1,5 +1,6 @@
 import File from "./file.io";
 import { appconfig, type TLogLevel } from "./config/app";
+import Env from "./config/env";
 const { FILE_PATHS, LogLevel } = appconfig;
 
 type LogPayload = {
@@ -57,6 +58,10 @@ export default class Logger {
     ].filter(Boolean);
 
     const logMessage = parts.join(" | ") + "\n";
+
+    if (Env.env.NODE_ENV == "dev") {
+      console.log(logMessage);
+    }
 
     const result = await File.append(this.logFilePath, logMessage);
 

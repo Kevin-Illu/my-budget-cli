@@ -1,11 +1,6 @@
-import Env from "./config/env";
 import DB from "./db";
 import Logger from "./logger";
+import "./config/app.ts";
 
-Env.init();
 Logger.init();
 DB.init();
-
-if (Env.env.NODE_ENV === "dev") {
-  Logger.internal("-----[DEV MODE ACTIVATED]-----");
-}

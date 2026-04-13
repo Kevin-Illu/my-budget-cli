@@ -1,6 +1,4 @@
-import DB from "./db";
-import Logger from "./logger";
-import "./config/app.ts";
+import "./config/app";
+import boostrap from "./config/boostrap";
 
-Logger.init();
-DB.init();
+boostrap();

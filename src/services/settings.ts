@@ -1,9 +1,8 @@
 import z from "zod";
-import File from "./file.io";
-import TryCatch from "./result";
-import { appconfig, type TSettings } from "./config/app";
 import Logger from "./logger";
-import { StringModule } from "./utils/string";
+import { appconfig, TSettings } from "../config/app";
+import File from "../core/file.io";
+import { StringModule } from "../utils/string";
 
 const { DEFAULT_SETTINGS, FILE_PATHS, SettingsSchema } = appconfig;
 
@@ -53,7 +52,7 @@ export class Settings {
 
     if (!result.success) {
       this.settings = DEFAULT_SETTINGS;
-      const err = z.treeifyError(result.error, (e) => e.message).properties;
+      const err = z.treeifyError(result.error, (e) => e.message).errors;
 
       Logger.error("Invalid settings file", StringModule.prettifyJSON(err));
       throw err;

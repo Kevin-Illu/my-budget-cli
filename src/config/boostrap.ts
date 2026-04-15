@@ -34,24 +34,20 @@ export default async function boostrap() {
 
   await dbService.execute(async (db) => {
     Logger.info("Creating database schema if not exists...");
-    const queries = await db.scriptToQueries(Env.env.DB_SCHEMA_PATH);
-    queries.forEach((query: string) => db.db.run(query));
+    await db.executeScript(Env.env.DB_SCHEMA_PATH);
   });
 
   if (Env.env.ENVIRONMENT === "dev") {
     await dbService.execute(async (db) => {
-      const row = db.db
-        .query("select count(*) as count from source_funding")
-        .get();
-
-      if (row && row.count > 0) {
+      const row = await db.query`select count(*) as total from source_funding`;
+      const total = row[0].total;
+      if (row && total > 0) {
         Logger.info("The database is already filled");
         return;
       }
 
       Logger.info("Filling the database with data ;)");
-      const queries = await db.scriptToQueries(Env.env.DB_SEED_PATH);
-      queries.forEach((query: string) => db.db.run(query));
+      await db.executeScript(Env.env.DB_SEED_PATH);
     });
   }
 

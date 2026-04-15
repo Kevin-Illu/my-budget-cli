@@ -50,12 +50,12 @@ export class ResiliencePolicy<T> {
    * @param action function to access the origial service
    * @returns void
    */
-  async execute(action: (s: T) => Promise<any>) {
+  async execute(action: (service: T) => Promise<any>) {
     let lastError: Error;
 
     for (let i = 0; i <= this.retries; i++) {
       const actionResult = await TryCatch.run(
-        async () => await action(this.service),
+        async () => await action(this.service as T),
       );
 
       // if the try is success then we stop trying

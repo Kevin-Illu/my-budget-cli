@@ -1,5 +1,5 @@
+import DB from "../core/db";
 import { ResiliencePolicy } from "../core/resilience.builder";
-import DB from "./db";
 import Logger from "./logger";
 
 type ServiceFactory<T> = (locator: typeof ServiceLocator) => T;

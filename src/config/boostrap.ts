@@ -26,7 +26,7 @@ export default async function boostrap() {
         return true;
       });
 
-    db.execute((s) => s.init());
+    db.execute(async (s) => await s.init());
     return db;
   });
 

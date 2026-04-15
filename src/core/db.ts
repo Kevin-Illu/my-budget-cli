@@ -68,12 +68,11 @@ export default class DB {
     const queries = await this.scriptToQueries(filepath);
 
     await this._sql.transaction(async (tx) => {
-      const q = [];
+      // Is important to execute one by one because
+      // unsafe dont support multiples statements :/
       for (const query of queries) {
-        q.push(tx.unsafe([query] as any));
+        await tx.unsafe([query] as any);
       }
-
-      return await Promise.all(q);
     });
 
     Logger.info(

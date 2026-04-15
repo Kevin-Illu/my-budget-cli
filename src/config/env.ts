@@ -8,6 +8,7 @@ const envSchema = z.object({
   DATABASE_PATH: z.string(),
   STORE_TYPE: z.enum(["sqlite", "json", "memory"]),
   DB_SCHEMA_PATH: z.string(),
+  DB_SEED_PATH: z.string(),
 });
 
 const result = envSchema.safeParse(process.env);

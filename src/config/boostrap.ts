@@ -1,7 +1,7 @@
 import DB from "../core/db";
+import ServiceLocator from "../core/locator";
+import Logger from "../core/logger";
 import { ResiliencePolicy } from "../core/resilience.builder";
-import ServiceLocator from "../services/locator";
-import Logger from "../services/logger";
 import Env from "./env";
 
 /**

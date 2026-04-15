@@ -1,7 +1,7 @@
 import TryCatch from "../core/result";
 import { appconfig } from "../config/app";
-import File from "../core/file.io";
-import Logger from "../services/logger";
+import File from "./file.io";
+import Logger from "./logger";
 import { SQL } from "bun";
 const { FILE_PATHS } = appconfig;
 

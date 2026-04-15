@@ -1,4 +1,4 @@
-import Logger from "../services/logger";
+import Logger from "./logger";
 import TryCatch from "./result";
 
 type ErrorPredicate = (error: any) => boolean;

@@ -26,3 +26,8 @@ data/
 
 # dev files
 test/
+dev/
+prod/
+
+# we dont want databases on remote xD
+.sqlite

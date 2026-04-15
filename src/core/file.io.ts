@@ -6,6 +6,13 @@ import TryCatch from "./result";
  * this class provide functions to interact with the file system
  */
 export default abstract class File {
+  /**
+   * Get a Bun File Blob
+   *
+   * @param path to the file
+   * @param options bun options
+   * @returns Blob
+   */
   static async file(path: string, options?: any) {
     return await TryCatch.run(() => Bun.file(path, options));
   }

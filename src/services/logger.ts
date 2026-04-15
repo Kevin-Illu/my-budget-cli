@@ -1,5 +1,7 @@
-import File from "./file.io";
-import { appconfig, type TLogLevel } from "./config/app";
+import { TLogLevel, appconfig } from "../config/app";
+import Env from "../config/env";
+import File from "../core/file.io";
+
 const { FILE_PATHS, LogLevel } = appconfig;
 
 type LogPayload = {
@@ -10,7 +12,7 @@ type LogPayload = {
 };
 
 export default class Logger {
-  static readonly logFilePath = FILE_PATHS.logfilepath;
+  private static readonly logFilePath = FILE_PATHS.logfilepath;
 
   static async init(): Promise<void> {
     const result = await File.file(this.logFilePath);
@@ -29,7 +31,7 @@ export default class Logger {
       );
 
       this.log({
-        level: LogLevel.error,
+        level: LogLevel.internal,
         message: "The logs file was created successfully",
       });
 
@@ -40,7 +42,7 @@ export default class Logger {
     this.info("STARTING LOGGIN");
   }
 
-  static async log({
+  private static async log({
     message,
     level = LogLevel.info,
     error,
@@ -57,6 +59,10 @@ export default class Logger {
     ].filter(Boolean);
 
     const logMessage = parts.join(" | ") + "\n";
+
+    if (Env.env.ENVIRONMENT == "dev") {
+      console.log(logMessage);
+    }
 
     const result = await File.append(this.logFilePath, logMessage);
 
@@ -86,14 +92,14 @@ export default class Logger {
     return this.log({ message, level: LogLevel.internal, context });
   }
 
-  static formatError(error: unknown): string {
+  private static formatError(error: unknown): string {
     if (error instanceof Error) {
       return `${error.name}: ${error.message}\n${error.stack ?? ""}`;
     }
     return String(error);
   }
 
-  static async newLine() {
+  private static async newLine() {
     await File.append(this.logFilePath, "\n");
   }
 }

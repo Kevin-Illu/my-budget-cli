@@ -30,4 +30,9 @@ dev/
 prod/
 
 # we dont want databases on remote xD
-.sqlite
+**/*.sqlite
+**/*.db
+**/*.sqlite-journal
+**/*.sqlite-shm
+**/*.sqlite-wal
+

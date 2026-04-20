@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { StringModule } from "../utils/string";
+import { StringModule } from "@budget/shared/string";
 
 const envSchema = z.object({
   ENVIRONMENT: z.enum(["dev", "prod"]),

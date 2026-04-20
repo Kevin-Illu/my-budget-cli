@@ -14,7 +14,11 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      "@/*": ["./src/types/*"]
+      "@budget/types/*": ["./src/types/*"],
+      "@budget/domain/*": ["./src/domain/*"],
+      "@budget/core/*": ["./src/core/*"],
+      "@budget/infra/*": ["./src/infraestructure/*"],
+      "@budget/shared/*": ["./src/shared/*"]
     }
   },
   "include": ["src/**/*.ts"],

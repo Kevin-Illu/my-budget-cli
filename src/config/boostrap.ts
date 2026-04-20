@@ -1,8 +1,10 @@
-import DB from "../core/db";
-import ServiceLocator from "../core/locator";
-import Logger from "../core/logger";
-import { ResiliencePolicy } from "../core/resilience.builder";
+import { ExpenseRepository } from "@budget/infra/sqlite/expense.repo";
+import DB from "@budget/core/db";
+import ServiceLocator from "@budget/core/locator";
+import Logger from "@budget/core/logger";
+import { ResiliencePolicy } from "@budget/core/resilience.builder";
 import Env from "./env";
+import { TOKENS } from "@budget/core/locator.keys";
 
 /**
  * Here is defined all the configuration and the setup
@@ -13,24 +15,36 @@ export default async function boostrap() {
   // log file
   await Logger.init();
 
-  ServiceLocator.register("db", () => {
+  ServiceLocator.register(TOKENS.db, () => {
     const dbInstance = new DB();
     const db = new ResiliencePolicy<DB>(dbInstance)
       .when(
         (err) =>
           err.code === "SQLITE_CANTOPEN" || err.code === "SQLITE_CORRUPT",
       )
-      .withRetries(3)
+      .whitRetries(3)
       .whitRecovery(async () => {
         await dbInstance.init();
         return true;
       });
 
+    // FIX: await this call somehow
     db.execute(async (s) => await s.init());
+
     return db;
   });
 
-  const dbService = ServiceLocator.get("db");
+  ServiceLocator.register(TOKENS.expenseRepo, (locator) => {
+    const db = locator.get(TOKENS.db);
+    return new ExpenseRepository(db);
+  });
+
+  //
+  //
+  // initializacion of the db to make inserts
+  //
+  //
+  const dbService = ServiceLocator.get(TOKENS.db);
 
   await dbService.execute(async (db) => {
     Logger.info("Creating database schema if not exists...");

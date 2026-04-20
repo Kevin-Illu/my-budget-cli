@@ -38,7 +38,7 @@ export class ResiliencePolicy<T> {
    * @param count number of retries
    * @returns ResiliencePolicy
    */
-  withRetries(count: number) {
+  whitRetries(count: number) {
     this.retries = count;
     return this;
   }

@@ -1,12 +1,13 @@
+import { ExpenseRepository } from "@budget/infra/sqlite/expense.repo";
 import DB from "./db";
 import { ResiliencePolicy } from "./resilience.builder";
-import Logger from "./logger";
+import { TOKENS } from "./locator.keys";
 
 type ServiceFactory<T> = (locator: typeof ServiceLocator) => T;
 
 interface ServiceMap {
-  db: ResiliencePolicy<DB>;
-  logger: Logger;
+  [TOKENS.db]: ResiliencePolicy<DB>;
+  [TOKENS.expenseRepo]: ExpenseRepository;
 }
 
 /**

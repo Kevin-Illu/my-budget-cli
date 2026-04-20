@@ -1,16 +1,18 @@
 import { sql } from "bun";
 
-import { IExpenseRepository } from "@budget/domain/expense/expense.repository";
 import TryCatch from "@budget/core/result";
 import { TDatabase } from "@budget/types/database.types";
-import {
+import { IExpenseRepository } from "@budget/domain/expense/expense.repository";
+import type {
   CreateExpenseDTO,
-  ExpenseToRowSchema,
   ExpenseResponseDTO,
   ExpenseRow,
-  ExpenseSchema,
   UpdateExpenseDTO,
 } from "@budget/types/expense.types";
+import {
+  ExpenseSchema,
+  ExpenseToRowSchema,
+} from "@budget/types/expense.schema";
 
 export class ExpenseRepository implements IExpenseRepository {
   constructor(private db: TDatabase) {}

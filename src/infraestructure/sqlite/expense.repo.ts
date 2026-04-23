@@ -46,7 +46,21 @@ export class ExpenseRepository implements IExpenseRepository {
     ).unwrap();
   }
 
-  async delete(id: number): Promise<void> {}
+  async delete(id: number): Promise<void> {
+    return (
+      await TryCatch.run(() =>
+        this.db.execute(async (s) => {
+          const result =
+            await s.query`DELETE FROM expense WHERE id = ${id} RETURNING *`;
+          const deletedExpense = result[0];
+
+          if (!deletedExpense) {
+            throw new Error(`Expense with id ${id} not found`);
+          }
+        }),
+      )
+    ).unwrap();
+  }
 
   async findById(id: number): Promise<ExpenseResponseDTO | null> {
     return (

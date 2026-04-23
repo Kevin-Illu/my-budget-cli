@@ -118,21 +118,21 @@ describe("ExpenseRepository (integration)", () => {
       );
     });
   });
-  //
-  // describe("delete", () => {
-  //   it("deletes an existing expense", async () => {
-  //     const saved = await repo.save(testExpense({ name: "TEST_Delete" }));
-  //
-  //     await repo.delete(saved.id);
-  //
-  //     const found = await repo.findById(saved.id);
-  //     expect(found).toBeNull();
-  //   });
-  //
-  //   it("throws when the expense does not exist", async () => {
-  //     expect(repo.delete(999_999_999)).rejects.toThrow(
-  //       "Expense with id 999999999 not found",
-  //     );
-  //   });
-  // });
+
+  describe("delete", () => {
+    it("deletes an existing expense", async () => {
+      const saved = await repo.save(testExpense({ name: "TEST_Delete" }));
+
+      await repo.delete(saved.id);
+
+      const found = await repo.findById(saved.id);
+      expect(found).toBeNull();
+    });
+
+    it("throws when the expense does not exist", async () => {
+      expect(repo.delete(999_999_999)).rejects.toThrow(
+        "Expense with id 999999999 not found",
+      );
+    });
+  });
 });

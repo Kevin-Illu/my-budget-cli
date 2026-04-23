@@ -32,18 +32,23 @@ export const CreateExpenseSchema = z.object({
 /**
  * Validates the fields supplied by the user but for insert into the database
  */
-export const CreateExpenseToDTOSchema = CreateExpenseSchema.partial().transform(
-  (expense) => ({
+export const CreateExpensechemaDTOToRow =
+  CreateExpenseSchema.partial().transform((expense) => ({
     name: expense.name,
     amount_cents: expense.amountCents,
-  }),
-);
+  }));
+
+export const UpdateExpenseSchema = CreateExpenseSchema.partial();
 
 /**
  * Validates the fields supplied by the user to update an expense.
  * All properties are optional.
  */
-export const UpdateExpenseSchema = CreateExpenseSchema.partial();
+export const UpdateExpenseSchemaDTOToRow =
+  CreateExpenseSchema.partial().transform((expense) => ({
+    name: expense.name,
+    amount_cents: expense.amountCents,
+  }));
 
 /**
  * Validates a paginated list of expenses returned by the service.

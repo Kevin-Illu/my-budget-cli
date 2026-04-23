@@ -74,50 +74,50 @@ describe("ExpenseRepository (integration)", () => {
       expect(result).toBeNull();
     });
   });
-  //
-  // describe("update", () => {
-  //   it("updates name and amountCents", async () => {
-  //     const saved = await repo.save(
-  //       testExpense({ name: "TEST_Update_Before" }),
-  //     );
-  //
-  //     const updated = await repo.update(saved.id, {
-  //       name: "TEST_Update_After",
-  //       amountCents: 9999,
-  //     });
-  //
-  //     expect(updated.id).toBe(saved.id);
-  //     expect(updated.name).toBe("TEST_Update_After");
-  //     expect(updated.amountCents).toBe(9999);
-  //   });
-  //
-  //   it("updates only name when amountCents is omitted", async () => {
-  //     const saved = await repo.save(
-  //       testExpense({ name: "TEST_PartialUpdate", amountCents: 1000 }),
-  //     );
-  //
-  //     const updated = await repo.update(saved.id, {
-  //       name: "TEST_PartialUpdate_Renamed",
-  //     });
-  //
-  //     expect(updated.name).toBe("TEST_PartialUpdate_Renamed");
-  //     expect(updated.amountCents).toBe(1000); // unchanged
-  //   });
-  //
-  //   it("throws when no fields are provided", async () => {
-  //     const saved = await repo.save(testExpense());
-  //
-  //     expect(repo.update(saved.id, {})).rejects.toThrow(
-  //       "No fields provided for update",
-  //     );
-  //   });
-  //
-  //   it("throws when the expense does not exist", async () => {
-  //     expect(repo.update(999_999_999, { name: "TEST_Ghost" })).rejects.toThrow(
-  //       "Expense with id 999999999 not found",
-  //     );
-  //   });
-  // });
+
+  describe("update", () => {
+    it("updates name and amountCents", async () => {
+      const saved = await repo.save(
+        testExpense({ name: "TEST_Update_Before" }),
+      );
+
+      const updated = await repo.update(saved.id, {
+        name: "TEST_Update_After",
+        amountCents: 9999,
+      });
+
+      expect(updated.id).toBe(saved.id);
+      expect(updated.name).toBe("TEST_Update_After");
+      expect(updated.amountCents).toBe(9999);
+    });
+
+    it("updates only name when amountCents is omitted", async () => {
+      const saved = await repo.save(
+        testExpense({ name: "TEST_PartialUpdate", amountCents: 1000 }),
+      );
+
+      const updated = await repo.update(saved.id, {
+        name: "TEST_PartialUpdate_Renamed",
+      });
+
+      expect(updated.name).toBe("TEST_PartialUpdate_Renamed");
+      expect(updated.amountCents).toBe(1000); // unchanged
+    });
+
+    it("throws when no fields are provided", async () => {
+      const saved = await repo.save(testExpense());
+
+      expect(repo.update(saved.id, {})).rejects.toThrow(
+        "No fields provided for update",
+      );
+    });
+
+    it("throws when the expense does not exist", async () => {
+      expect(repo.update(999_999_999, { name: "TEST_Ghost" })).rejects.toThrow(
+        "Expense with id 999999999 not found",
+      );
+    });
+  });
   //
   // describe("delete", () => {
   //   it("deletes an existing expense", async () => {

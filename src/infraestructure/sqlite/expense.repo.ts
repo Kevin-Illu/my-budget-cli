@@ -10,17 +10,15 @@ import type {
   UpdateExpenseDTO,
 } from "@budget/types/expense.types";
 import {
-  CreateExpenseSchema,
-  CreateExpenseToDTOSchema,
   ExpenseSchema,
+  UpdateExpenseSchemaDTOToRow,
 } from "@budget/types/expense.schema";
-import { StringModule } from "@budget/shared/string";
 
 export class ExpenseRepository implements IExpenseRepository {
   constructor(private db: TDatabase) {}
 
   async save(expense: CreateExpenseDTO): Promise<ExpenseResponseDTO> {
-    const newExpense = CreateExpenseToDTOSchema.parse(expense);
+    const newExpense = UpdateExpenseSchemaDTOToRow.parse(expense);
 
     const result = await TryCatch.run<ExpenseRow>(async () =>
       this.db.execute(async (service) => {
@@ -71,6 +69,26 @@ export class ExpenseRepository implements IExpenseRepository {
     id: number,
     data: UpdateExpenseDTO,
   ): Promise<ExpenseResponseDTO> {
-    return {} as ExpenseResponseDTO;
+    return (
+      await TryCatch.run(() => {
+        if (!data || JSON.stringify(data) === "{}") {
+          throw new Error("No fields provided for update");
+        }
+
+        return this.db.execute(async (s) => {
+          const row = UpdateExpenseSchemaDTOToRow.parse(data);
+          const updated =
+            await s.query`UPDATE expense SET ${sql(row, "name", "amount_cents")} WHERE id = ${id} RETURNING *`;
+
+          const updatedExpense = updated[0];
+
+          if (!updatedExpense) {
+            throw new Error(`Expense with id ${id} not found`);
+          }
+
+          return ExpenseSchema.parse(updated[0]);
+        });
+      })
+    ).unwrap();
   }
 }

@@ -41,7 +41,7 @@ export class ExpenseRepository implements IExpenseRepository {
     return (
       await TryCatch.run<ExpenseResponseDTO[]>(() =>
         this.db.execute(async (s) => {
-          const result = await s.query`SELECT * FROM expense`;
+          const result = (await s.query`SELECT * FROM expense`) as ExpenseRow[];
           return result.map((e) => ExpenseSchema.parse(e));
         }),
       )
@@ -51,7 +51,20 @@ export class ExpenseRepository implements IExpenseRepository {
   async delete(id: number): Promise<void> {}
 
   async findById(id: number): Promise<ExpenseResponseDTO | null> {
-    return null;
+    return (
+      await TryCatch.run<ExpenseResponseDTO>(() =>
+        this.db.execute(async (s) => {
+          const founded =
+            await s.query`SELECT * FROM expense AS e WHERE e.id = ${id}`;
+
+          const expenseFounded = founded[0];
+
+          if (!expenseFounded) return null;
+
+          return ExpenseSchema.parse(expenseFounded);
+        }),
+      )
+    ).unwrap();
   }
 
   async update(

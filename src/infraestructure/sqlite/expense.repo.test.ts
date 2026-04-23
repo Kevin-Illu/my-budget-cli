@@ -56,24 +56,24 @@ describe("ExpenseRepository (integration)", () => {
       expect(first).toHaveProperty("createdAt");
     });
   });
-  //
-  // describe("findById", () => {
-  //   it("returns the expense when it exists", async () => {
-  //     const saved = await repo.save(testExpense({ name: "TEST_FindById" }));
-  //
-  //     const found = await repo.findById(saved.id);
-  //
-  //     expect(found).not.toBeNull();
-  //     expect(found?.id).toBe(saved.id);
-  //     expect(found?.name).toBe("TEST_FindById");
-  //   });
-  //
-  //   it("returns null for a non-existent id", async () => {
-  //     const result = await repo.findById(999_999_999);
-  //
-  //     expect(result).toBeNull();
-  //   });
-  // });
+
+  describe("findById", () => {
+    it("returns the expense when it exists", async () => {
+      const saved = await repo.save(testExpense({ name: "TEST_FindById" }));
+
+      const found = await repo.findById(saved.id);
+
+      expect(found).not.toBeNull();
+      expect(found?.id).toBe(saved.id);
+      expect(found?.name).toBe("TEST_FindById");
+    });
+
+    it("returns null for a non-existent id", async () => {
+      const result = await repo.findById(999_999_999);
+
+      expect(result).toBeNull();
+    });
+  });
   //
   // describe("update", () => {
   //   it("updates name and amountCents", async () => {

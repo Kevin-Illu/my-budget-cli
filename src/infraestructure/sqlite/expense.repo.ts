@@ -14,6 +14,7 @@ import {
   CreateExpenseToDTOSchema,
   ExpenseSchema,
 } from "@budget/types/expense.schema";
+import { StringModule } from "@budget/shared/string";
 
 export class ExpenseRepository implements IExpenseRepository {
   constructor(private db: TDatabase) {}
@@ -37,7 +38,14 @@ export class ExpenseRepository implements IExpenseRepository {
   }
 
   async findAll(): Promise<ExpenseResponseDTO[]> {
-    return [];
+    return (
+      await TryCatch.run<ExpenseResponseDTO[]>(() =>
+        this.db.execute(async (s) => {
+          const result = await s.query`SELECT * FROM expense`;
+          return result.map((e) => ExpenseSchema.parse(e));
+        }),
+      )
+    ).unwrap();
   }
 
   async delete(id: number): Promise<void> {}

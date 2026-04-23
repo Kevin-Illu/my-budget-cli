@@ -35,27 +35,27 @@ describe("ExpenseRepository (integration)", () => {
       expect(repo.save(testExpense({ amountCents: 0 }))).rejects.toThrow();
     });
   });
-  //
-  // describe("findAll", () => {
-  //   it("returns at least the expense we just inserted", async () => {
-  //     await repo.save(testExpense({ name: "TEST_FindAll" }));
-  //
-  //     const results = await repo.findAll();
-  //
-  //     expect(results.length).toBeGreaterThan(0);
-  //     expect(results.some((e) => e.name === "TEST_FindAll")).toBeTrue();
-  //   });
-  //
-  //   it("returns expenses with the correct shape", async () => {
-  //     const results = await repo.findAll();
-  //     const first = results[0];
-  //
-  //     expect(first).toHaveProperty("id");
-  //     expect(first).toHaveProperty("name");
-  //     expect(first).toHaveProperty("amountCents");
-  //     expect(first).toHaveProperty("createdAt");
-  //   });
-  // });
+
+  describe("findAll", () => {
+    it("returns at least the expense we just inserted", async () => {
+      await repo.save(testExpense({ name: "TEST_FindAll" }));
+
+      const results = await repo.findAll();
+
+      expect(results.length).toBeGreaterThan(0);
+      expect(results.some((e) => e.name === "TEST_FindAll")).toBeTrue();
+    });
+
+    it("returns expenses with the correct shape", async () => {
+      const results = await repo.findAll();
+      const first = results[0];
+
+      expect(first).toHaveProperty("id");
+      expect(first).toHaveProperty("name");
+      expect(first).toHaveProperty("amountCents");
+      expect(first).toHaveProperty("createdAt");
+    });
+  });
   //
   // describe("findById", () => {
   //   it("returns the expense when it exists", async () => {

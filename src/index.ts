@@ -1,4 +1,4 @@
 import "./config/app";
-import boostrap from "./config/boostrap";
+import boostrap from "@budget/config/boostrap";
 
 boostrap();

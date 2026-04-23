@@ -51,7 +51,7 @@ export default async function boostrap() {
     await db.executeScript(Env.env.DB_SCHEMA_PATH);
   });
 
-  if (Env.env.ENVIRONMENT === "dev") {
+  if (Env.env.ENVIRONMENT === "dev" || Env.env.ENVIRONMENT === "test") {
     await dbService.execute(async (db) => {
       const row = await db.query`select count(*) as total from source_funding`;
       const total = row[0].total;

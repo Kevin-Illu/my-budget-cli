@@ -1,9 +1,8 @@
 import TryCatch from "../core/result";
-import { appconfig } from "../config/app";
 import File from "./file.io";
 import Logger from "./logger";
 import { SQL } from "bun";
-const { FILE_PATHS } = appconfig;
+import Env from "@budget/config/env";
 
 export default class DB {
   private _sql: SQL;
@@ -12,7 +11,7 @@ export default class DB {
     const result = await TryCatch.run(async () => {
       Logger.info("Initializing database...");
 
-      this._sql = new SQL(FILE_PATHS.databasepath, {
+      this._sql = new SQL(Env.env.DATABASE_PATH, {
         adapter: "sqlite",
         strict: true,
         create: true,

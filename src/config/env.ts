@@ -2,7 +2,7 @@ import { z } from "zod";
 import { StringModule } from "@budget/shared/string";
 
 const envSchema = z.object({
-  ENVIRONMENT: z.enum(["dev", "prod"]),
+  ENVIRONMENT: z.enum(["dev", "prod", "test"]),
   LOG_FILE_PATH: z.string(),
   SETTINGS_FILE_PATH: z.string(),
   DATABASE_PATH: z.string(),

@@ -2,7 +2,7 @@ import { TLogLevel, appconfig } from "../config/app";
 import Env from "../config/env";
 import File from "./file.io";
 
-const { FILE_PATHS, LogLevel } = appconfig;
+const LogLevel = appconfig.LogLevel;
 
 type LogPayload = {
   message: string;
@@ -12,7 +12,7 @@ type LogPayload = {
 };
 
 export default class Logger {
-  private static readonly logFilePath = FILE_PATHS.logfilepath;
+  private static readonly logFilePath = Env.env.LOG_FILE_PATH;
 
   static async init(): Promise<void> {
     const result = await File.file(this.logFilePath);
@@ -60,7 +60,7 @@ export default class Logger {
 
     const logMessage = parts.join(" | ") + "\n";
 
-    if (Env.env.ENVIRONMENT == "dev") {
+    if (Env.env.ENVIRONMENT == "dev" || Env.env.ENVIRONMENT == "test") {
       console.log(logMessage);
     }
 

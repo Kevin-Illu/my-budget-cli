@@ -7,17 +7,6 @@ import Env from "./env";
  */
 export namespace appconfig {
   /**
-   * @constant FILE_PATHS
-   * @description A list of paths where my app can found config,log,databse files
-   * to operate correctly.
-   */
-  export const FILE_PATHS = {
-    logfilepath: Env.env.LOG_FILE_PATH,
-    settingsfilepath: Env.env.SETTINGS_FILE_PATH,
-    databasepath: Env.env.DATABASE_PATH,
-  };
-
-  /**
    * Is used to set the default settings in case the file
    * not exist
    */

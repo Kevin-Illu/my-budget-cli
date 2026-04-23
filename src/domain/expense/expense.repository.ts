@@ -2,7 +2,7 @@ import {
   CreateExpenseDTO,
   ExpenseResponseDTO,
   UpdateExpenseDTO,
-} from "@/expense.types";
+} from "@budget/types/expense.types";
 
 export interface IExpenseRepository {
   /**

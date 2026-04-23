@@ -32,7 +32,7 @@ export const CreateExpenseSchema = z.object({
 /**
  * Validates the fields supplied by the user but for insert into the database
  */
-export const ExpenseToRowSchema = CreateExpenseSchema.partial().transform(
+export const CreateExpenseToDTOSchema = CreateExpenseSchema.partial().transform(
   (expense) => ({
     name: expense.name,
     amount_cents: expense.amountCents,

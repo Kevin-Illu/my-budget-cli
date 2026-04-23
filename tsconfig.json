@@ -18,7 +18,8 @@
       "@budget/domain/*": ["./src/domain/*"],
       "@budget/core/*": ["./src/core/*"],
       "@budget/infra/*": ["./src/infraestructure/*"],
-      "@budget/shared/*": ["./src/shared/*"]
+      "@budget/shared/*": ["./src/shared/*"],
+      "@budget/config/*": ["./src/config/*"]
     }
   },
   "include": ["src/**/*.ts"],

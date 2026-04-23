@@ -1,0 +1,16 @@
+[test]
+# Root where bun test looks for test files
+root = "./src"
+preload = ["./src/tests/setup.ts"]
+
+# Timeout per test in milliseconds
+timeout = 10000
+
+# Re-run failed tests first
+rerunEach = 0
+
+# Coverage (optional)
+# coverage = true
+# coverageDir = "./coverage"
+# coverageReporter = ["text", "lcov"]
+

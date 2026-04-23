@@ -1,7 +1,12 @@
 {
   "scripts": {
     "start": "bun --env-file=.env.prod bun run ./src/index.ts",
-    "dev": "bun --env-file=.env.dev run ./src/index.ts"
+    "dev": "bun --env-file=.env.dev run ./src/index.ts",
+    "test": "bun test --env-file=.env.test",
+    "test:watch": "bun test --watch --env-file=.env.test",
+    "test:coverage": "bun test --coverage --env-file=.env.test",
+    "test:integration": "bun test --testPathPattern=integration --env-file=.env.test",
+    "test:unit": "bun test --testPathPattern=unit --env-file=.env.test"
   },
   "devDependencies": {
     "@types/node": "^22.19.3",

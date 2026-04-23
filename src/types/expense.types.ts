@@ -1,11 +1,11 @@
 import { z } from "zod";
 import {
   CreateExpenseSchema,
+  CreateExpenseToDTOSchema,
   ExpenseFormSchema,
   ExpenseListResponseSchema,
   ExpenseRowSchema,
   ExpenseSchema,
-  ExpenseToRowSchema,
   UpdateExpenseSchema,
 } from "./expense.schema";
 
@@ -54,4 +54,4 @@ export type ExpenseFormValues = z.infer<typeof ExpenseFormSchema>;
  * Represents the expense that will be inserted into
  * the database
  */
-export type ExpenseToRow = z.infer<typeof ExpenseToRowSchema>;
+export type ExpenseToDTO = z.infer<typeof CreateExpenseToDTOSchema>;

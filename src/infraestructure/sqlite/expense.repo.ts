@@ -18,21 +18,23 @@ export class ExpenseRepository implements IExpenseRepository {
   constructor(private db: TDatabase) {}
 
   async save(expense: CreateExpenseDTO): Promise<ExpenseResponseDTO> {
-    const newExpense = UpdateExpenseSchemaDTOToRow.parse(expense);
+    return (
+      await TryCatch.run(() =>
+        this.db.execute(async (s) => {
+          const row = UpdateExpenseSchemaDTOToRow.parse(expense);
 
-    const result = await TryCatch.run<ExpenseRow>(async () =>
-      this.db.execute(async (service) => {
-        const result =
-          await service.query`INSERT INTO expense ${sql(newExpense)} RETURNING *`;
-        return result[0];
-      }),
-    );
+          const result =
+            await s.query`INSERT INTO expense ${sql(row)} RETURNING *`;
+          const savedExpense = result[0];
 
-    if (result.isError()) {
-      throw result.error;
-    }
+          if (!savedExpense) {
+            throw new Error("Failed to save the expense");
+          }
 
-    return ExpenseSchema.parse(result.value);
+          return ExpenseSchema.parse(savedExpense);
+        }),
+      )
+    ).unwrap();
   }
 
   async findAll(): Promise<ExpenseResponseDTO[]> {

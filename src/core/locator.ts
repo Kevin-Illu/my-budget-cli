@@ -2,12 +2,16 @@ import { ExpenseRepository } from "@budget/infra/sqlite/expense.repo";
 import DB from "./db";
 import { ResiliencePolicy } from "./resilience.builder";
 import { TOKENS } from "./locator.keys";
+import { FundingSourceRepository } from "@budget/infra/sqlite/funding-source.repo";
 
 type ServiceFactory<T> = (locator: typeof ServiceLocator) => T;
 
+// TODO: encontrar una forma de acutalizar este tipo
+// automaticamente :c
 interface ServiceMap {
   [TOKENS.db]: ResiliencePolicy<DB>;
   [TOKENS.expenseRepo]: ExpenseRepository;
+  [TOKENS.fundingSourceRepo]: FundingSourceRepository;
 }
 
 /**

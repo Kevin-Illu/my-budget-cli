@@ -14,7 +14,7 @@ export const ExpenseRowSchema = z.object({
  * Validates and transforms a raw DB row into a JS-friendly entity (camelCase).
  * Use `z.output<>` to infer the post-transform type.
  */
-export const ExpenseSchema = ExpenseRowSchema.transform((row) => ({
+export const ExpenseSchemaDTO = ExpenseRowSchema.transform((row) => ({
   id: row.id,
   name: row.name,
   amountCents: row.amount_cents,
@@ -24,7 +24,7 @@ export const ExpenseSchema = ExpenseRowSchema.transform((row) => ({
 /**
  * Validates the fields supplied by the user to create an expense.
  */
-export const CreateExpenseSchema = z.object({
+export const CreateExpenseDTOSchema = z.object({
   name: z.string().min(1),
   amountCents: z.number().int().positive(),
 });
@@ -32,20 +32,25 @@ export const CreateExpenseSchema = z.object({
 /**
  * Validates the fields supplied by the user but for insert into the database
  */
-export const CreateExpensechemaDTOToRow =
-  CreateExpenseSchema.partial().transform((expense) => ({
+export const CreateExpenseSchemaDTOToRow = CreateExpenseDTOSchema.transform(
+  (expense) => ({
     name: expense.name,
     amount_cents: expense.amountCents,
-  }));
+  }),
+);
 
-export const UpdateExpenseSchema = CreateExpenseSchema.partial();
+/**
+ * Validates the fields supplied by the user
+ * but for update into the database
+ */
+export const UpdateExpenseDTOSchema = CreateExpenseDTOSchema.partial();
 
 /**
  * Validates the fields supplied by the user to update an expense.
  * All properties are optional.
  */
 export const UpdateExpenseSchemaDTOToRow =
-  CreateExpenseSchema.partial().transform((expense) => ({
+  CreateExpenseDTOSchema.partial().transform((expense) => ({
     name: expense.name,
     amount_cents: expense.amountCents,
   }));
@@ -54,16 +59,8 @@ export const UpdateExpenseSchemaDTOToRow =
  * Validates a paginated list of expenses returned by the service.
  */
 export const ExpenseListResponseSchema = z.object({
-  data: z.array(ExpenseSchema),
+  data: z.array(ExpenseSchemaDTO),
   total: z.number(),
   page: z.number(),
   pageSize: z.number(),
-});
-
-/**
- * Validates raw user input from an expense form (pre-parse strings).
- */
-export const ExpenseFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  amount: z.string().regex(/^\d+(\.\d{1,2})?$/, "Invalid amount"),
 });

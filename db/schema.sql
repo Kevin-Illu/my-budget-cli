@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS expense (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS source_funding (
+CREATE TABLE IF NOT EXISTS funding_source (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name TEXT NOT NULL,
     initial_amount_cents INTEGER NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS source_funding (
 CREATE TABLE IF NOT EXISTS expense_source (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     expense_id INTEGER NOT NULL,
-    source_funding_id INTEGER NOT NULL,
+    funding_source_id INTEGER NOT NULL,
     FOREIGN KEY (expense_id) REFERENCES expense(id) ON DELETE CASCADE,
-    FOREIGN KEY (source_funding_id) REFERENCES source_funding(id) ON DELETE CASCADE
+    FOREIGN KEY (funding_source_id) REFERENCES funding_source(id) ON DELETE CASCADE
 );

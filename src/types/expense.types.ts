@@ -1,12 +1,11 @@
 import { z } from "zod";
 import {
-  CreateExpenseSchema,
-  CreateExpenseToDTOSchema,
-  ExpenseFormSchema,
+  CreateExpenseSchemaDTOToRow,
+  CreateExpenseDTOSchema,
   ExpenseListResponseSchema,
   ExpenseRowSchema,
-  ExpenseSchema,
-  UpdateExpenseSchema,
+  ExpenseSchemaDTO,
+  UpdateExpenseDTOSchema,
 } from "./expense.schema";
 
 /**
@@ -20,18 +19,18 @@ export type ExpenseRow = z.infer<typeof ExpenseRowSchema>;
  * This is what the repository should return to the service layer.
  * Note: uses `z.output<>` because `ExpenseSchema` has a `.transform()`.
  */
-export type ExpenseEntity = z.output<typeof ExpenseSchema>;
+export type ExpenseEntity = z.output<typeof ExpenseSchemaDTO>;
 
 /**
  * Represents the fields supplied by the user to create an expense.
  */
-export type CreateExpenseDTO = z.infer<typeof CreateExpenseSchema>;
+export type CreateExpenseDTO = z.infer<typeof CreateExpenseDTOSchema>;
 
 /**
  * Represents the fields supplied by the user to update an expense.
  * All properties are optional.
  */
-export type UpdateExpenseDTO = z.infer<typeof UpdateExpenseSchema>;
+export type UpdateExpenseDTO = z.infer<typeof UpdateExpenseDTOSchema>;
 
 /**
  * Represents the object the service returns to the UI.
@@ -45,13 +44,7 @@ export type ExpenseResponseDTO = Readonly<ExpenseEntity>;
 export type ExpenseListResponseDTO = z.infer<typeof ExpenseListResponseSchema>;
 
 /**
- * Represents raw user input from an expense form (pre-parse strings).
- * Amount is a string (e.g. "12.50") and must be converted to cents before sending.
- */
-export type ExpenseFormValues = z.infer<typeof ExpenseFormSchema>;
-
-/**
  * Represents the expense that will be inserted into
  * the database
  */
-export type ExpenseToDTO = z.infer<typeof CreateExpenseToDTOSchema>;
+export type ExpenseToDTO = z.infer<typeof CreateExpenseSchemaDTOToRow>;

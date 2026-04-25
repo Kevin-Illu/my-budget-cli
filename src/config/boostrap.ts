@@ -5,6 +5,7 @@ import Logger from "@budget/core/logger";
 import { ResiliencePolicy } from "@budget/core/resilience.builder";
 import Env from "./env";
 import { TOKENS } from "@budget/core/locator.keys";
+import { FundingSourceRepository } from "@budget/infra/sqlite/funding-source.repo";
 
 /**
  * Here is defined all the configuration and the setup
@@ -39,6 +40,11 @@ export default async function boostrap() {
     return new ExpenseRepository(db);
   });
 
+  ServiceLocator.register(TOKENS.fundingSourceRepo, (locator) => {
+    const db = locator.get(TOKENS.db);
+    return new FundingSourceRepository(db);
+  });
+
   //
   //
   // initializacion of the db to make inserts
@@ -53,7 +59,7 @@ export default async function boostrap() {
 
   if (Env.env.ENVIRONMENT === "dev" || Env.env.ENVIRONMENT === "test") {
     await dbService.execute(async (db) => {
-      const row = await db.query`select count(*) as total from source_funding`;
+      const row = await db.query`select count(*) as total from funding_source`;
       const total = row[0].total;
       if (row && total > 0) {
         Logger.info("The database is already filled");

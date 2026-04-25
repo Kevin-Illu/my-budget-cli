@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from "bun:test";
+import { describe, it, expect, beforeAll, afterAll } from "bun:test";
 import ServiceLocator from "@budget/core/locator";
 import { TOKENS } from "@budget/core/locator.keys";
 import type { IExpenseRepository } from "@budget/domain/expense/expense.repository";
@@ -10,6 +10,12 @@ let db: TDatabase;
 beforeAll(async () => {
   db = ServiceLocator.get(TOKENS.db);
   repo = ServiceLocator.get(TOKENS.expenseRepo);
+});
+
+afterAll(async () => {
+  await db.execute(async (s) => {
+    await s.query`DELETE FROM expense WHERE name LIKE 'TEST_%'`;
+  });
 });
 
 // Prefix all test data so afterAll can cleanly wipe only test rows
@@ -31,8 +37,11 @@ describe("ExpenseRepository (integration)", () => {
     });
 
     it("throws on invalid data (amountCents = 0)", async () => {
-      // Zod validation inside the schema should reject this
       expect(repo.save(testExpense({ amountCents: 0 }))).rejects.toThrow();
+    });
+
+    it("throws on missing name", async () => {
+      expect(repo.save(testExpense({ name: "" }))).rejects.toThrow();
     });
   });
 

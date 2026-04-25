@@ -10,7 +10,8 @@ import type {
   UpdateExpenseDTO,
 } from "@budget/types/expense.types";
 import {
-  ExpenseSchema,
+  CreateExpenseSchemaDTOToRow,
+  ExpenseSchemaDTO,
   UpdateExpenseSchemaDTOToRow,
 } from "@budget/types/expense.schema";
 
@@ -21,7 +22,7 @@ export class ExpenseRepository implements IExpenseRepository {
     return (
       await TryCatch.run(() =>
         this.db.execute(async (s) => {
-          const row = UpdateExpenseSchemaDTOToRow.parse(expense);
+          const row = CreateExpenseSchemaDTOToRow.parse(expense);
 
           const result =
             await s.query`INSERT INTO expense ${sql(row)} RETURNING *`;
@@ -31,7 +32,7 @@ export class ExpenseRepository implements IExpenseRepository {
             throw new Error("Failed to save the expense");
           }
 
-          return ExpenseSchema.parse(savedExpense);
+          return ExpenseSchemaDTO.parse(savedExpense);
         }),
       )
     ).unwrap();
@@ -42,7 +43,7 @@ export class ExpenseRepository implements IExpenseRepository {
       await TryCatch.run<ExpenseResponseDTO[]>(() =>
         this.db.execute(async (s) => {
           const result = (await s.query`SELECT * FROM expense`) as ExpenseRow[];
-          return result.map((e) => ExpenseSchema.parse(e));
+          return result.map((e) => ExpenseSchemaDTO.parse(e));
         }),
       )
     ).unwrap();
@@ -68,14 +69,14 @@ export class ExpenseRepository implements IExpenseRepository {
     return (
       await TryCatch.run<ExpenseResponseDTO>(() =>
         this.db.execute(async (s) => {
-          const founded =
+          const result =
             await s.query`SELECT * FROM expense AS e WHERE e.id = ${id}`;
 
-          const expenseFounded = founded[0];
+          const expenseFounded = result[0];
 
           if (!expenseFounded) return null;
 
-          return ExpenseSchema.parse(expenseFounded);
+          return ExpenseSchemaDTO.parse(expenseFounded);
         }),
       )
     ).unwrap();
@@ -102,7 +103,7 @@ export class ExpenseRepository implements IExpenseRepository {
             throw new Error(`Expense with id ${id} not found`);
           }
 
-          return ExpenseSchema.parse(updated[0]);
+          return ExpenseSchemaDTO.parse(updatedExpense);
         });
       })
     ).unwrap();

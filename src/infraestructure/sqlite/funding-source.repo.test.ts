@@ -2,6 +2,7 @@ import ServiceLocator from "@budget/core/locator";
 import { TOKENS } from "@budget/core/locator.keys";
 import { IFundingSourceRepository } from "@budget/domain/funding-source/funding-source.repository";
 import { TDatabase } from "@budget/types/database.types";
+import { fail } from "assert";
 import { beforeAll, afterAll, describe, it, expect } from "bun:test";
 
 let repo: IFundingSourceRepository;
@@ -27,7 +28,7 @@ const testFundingSource = (overrides = {}) => ({
 describe("FundingSourceRepository (integration)", () => {
   describe("save", () => {
     it("inserts a funding source and returns it with an id", async () => {
-      const result = await repo.save(testFundingSource());
+      const result = (await repo.save(testFundingSource())).unwrap();
 
       expect(result.id).toBeNumber();
       expect(result.name).toBe("TEST_Salary");
@@ -36,13 +37,15 @@ describe("FundingSourceRepository (integration)", () => {
     });
 
     it("throws on invalid data (initialAmountCents = 0)", async () => {
-      expect(
-        repo.save(testFundingSource({ initialAmountCents: 0 })),
-      ).rejects.toThrow();
+      const result = await repo.save(
+        testFundingSource({ initialAmountCents: 0 }),
+      );
+      expect(result.isErr()).toBeTrue();
     });
 
     it("throws on missing name", async () => {
-      expect(repo.save(testFundingSource({ name: "" }))).rejects.toThrow();
+      const result = await repo.save(testFundingSource({ name: "" }));
+      expect(result.isErr()).toBeTrue();
     });
   });
 
@@ -50,14 +53,14 @@ describe("FundingSourceRepository (integration)", () => {
     it("returns at least the funding source we inserted", async () => {
       await repo.save(testFundingSource({ name: "TEST_FindAll" }));
 
-      const results = await repo.findAll();
+      const results = (await repo.findAll()).unwrap();
 
       expect(results.length).toBeGreaterThan(0);
       expect(results.some((f) => f.name === "TEST_FindAll")).toBeTrue();
     });
 
     it("returns funding sources with the correct shape", async () => {
-      const results = await repo.findAll();
+      const results = (await repo.findAll()).unwrap();
       const first = results[0];
 
       expect(first).toHaveProperty("id");
@@ -69,11 +72,11 @@ describe("FundingSourceRepository (integration)", () => {
 
   describe("findById", () => {
     it("returns the funding source when it exists", async () => {
-      const saved = await repo.save(
-        testFundingSource({ name: "TEST_FindById" }),
-      );
+      const saved = (
+        await repo.save(testFundingSource({ name: "TEST_FindById" }))
+      ).unwrap();
 
-      const found = await repo.findById(saved.id);
+      const found = (await repo.findById(saved.id)).unwrap();
 
       expect(found).not.toBeNull();
       expect(found?.id).toBe(saved.id);
@@ -82,7 +85,7 @@ describe("FundingSourceRepository (integration)", () => {
     });
 
     it("returns null for a non-existent id", async () => {
-      const result = await repo.findById(999_999_999);
+      const result = (await repo.findById(999_999_999)).unwrap();
 
       expect(result).toBeNull();
     });
@@ -90,14 +93,16 @@ describe("FundingSourceRepository (integration)", () => {
 
   describe("update", () => {
     it("updates name and initialAmountCents", async () => {
-      const saved = await repo.save(
-        testFundingSource({ name: "TEST_Update_Before" }),
-      );
+      const saved = (
+        await repo.save(testFundingSource({ name: "TEST_Update_Before" }))
+      ).unwrap();
 
-      const updated = await repo.update(saved.id, {
-        name: "TEST_Update_After",
-        initialAmountCents: 200_000,
-      });
+      const updated = (
+        await repo.update(saved.id, {
+          name: "TEST_Update_After",
+          initialAmountCents: 200_000,
+        })
+      ).unwrap();
 
       expect(updated.id).toBe(saved.id);
       expect(updated.name).toBe("TEST_Update_After");
@@ -105,47 +110,73 @@ describe("FundingSourceRepository (integration)", () => {
     });
 
     it("updates only name when initialAmountCents is omitted", async () => {
-      const saved = await repo.save(
-        testFundingSource({ name: "TEST_Partial", initialAmountCents: 50_000 }),
-      );
+      const saved = (
+        await repo.save(
+          testFundingSource({
+            name: "TEST_Partial",
+            initialAmountCents: 50_000,
+          }),
+        )
+      ).unwrap();
 
-      const updated = await repo.update(saved.id, {
-        name: "TEST_Partial_Renamed",
-      });
+      const updated = (
+        await repo.update(saved.id, {
+          name: "TEST_Partial_Renamed",
+        })
+      ).unwrap();
 
       expect(updated.name).toBe("TEST_Partial_Renamed");
       expect(updated.initialAmountCents).toBe(50_000); // sin cambios
     });
 
     it("throws when no fields are provided", async () => {
-      const saved = await repo.save(testFundingSource());
+      const saved = (await repo.save(testFundingSource())).unwrap();
+      const result = await repo.update(saved.id, {});
 
-      expect(repo.update(saved.id, {})).rejects.toThrow(
-        "No fields provided for update",
-      );
+      result.match({
+        ok: () => fail("Expected fail"),
+        err: (err) => {
+          expect(err.message).toContain("No fields provided for update");
+        },
+      });
     });
 
     it("throws when the funding source does not exist", async () => {
-      expect(repo.update(999_999_999, { name: "TEST_Ghost" })).rejects.toThrow(
-        "Funding source with 999999999 not found",
-      );
+      const result = await repo.update(999_999_999, { name: "TEST_Ghost" });
+      result.match({
+        ok: () => fail("Expected fail"),
+        err: (err) => {
+          expect(err.message).toContain(
+            "Funding source with 999999999 not found",
+          );
+        },
+      });
     });
   });
 
   describe("delete", () => {
     it("deletes an existing funding source", async () => {
-      const saved = await repo.save(testFundingSource({ name: "TEST_Delete" }));
+      const saved = (
+        await repo.save(testFundingSource({ name: "TEST_Delete" }))
+      ).unwrap();
 
       await repo.delete(saved.id);
 
-      const found = await repo.findById(saved.id);
+      const found = (await repo.findById(saved.id)).unwrap();
       expect(found).toBeNull();
     });
 
     it("throws when the funding source does not exist", async () => {
-      expect(repo.delete(999_999_999)).rejects.toThrow(
-        "Funding source with id 999999999 not found",
-      );
+      const result = await repo.delete(999_999_999);
+
+      result.match({
+        ok: () => fail("Expected fail"),
+        err: (err) => {
+          expect(err.message).toContain(
+            "Funding source with id 999999999 not found",
+          );
+        },
+      });
     });
   });
 });

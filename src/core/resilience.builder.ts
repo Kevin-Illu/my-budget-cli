@@ -1,94 +1,73 @@
 import Logger from "./logger";
-import TryCatch from "./result";
+import { Failure, Result, TryCatch } from "./result";
 
-type ErrorPredicate = (error: any) => boolean;
+type ErrorPredicate<E> = (error: E) => boolean;
 
-export class ResiliencePolicy<T> {
+type AsyncFn<T, R> = (service: T) => Promise<R>;
+
+export class ResiliencePolicy<T, E = Error> {
   private recoveryLogic?: () => Promise<boolean>;
-  private errorFilter: ErrorPredicate = () => true; // default all the errors
+  private errorFilter: ErrorPredicate<E> = () => true;
   private retries = 3;
+  private delay = 500;
 
-  constructor(private service: T) {}
+  constructor(private readonly service: T) {}
 
-  /**
-   *
-   * @param logic set up the recovery logic for the current service.
-   *
-   * @returns ResiliencePolicy
-   */
-  whitRecovery(logic: () => Promise<boolean>): this {
+  withRecovery(logic: () => Promise<boolean>): this {
     this.recoveryLogic = logic;
     return this;
   }
 
-  /**
-   *
-   * @param condition filter when the recovery should be executed
-   * @returns ResiliencePolicy
-   */
-  when(condition: ErrorPredicate): this {
+  when(condition: ErrorPredicate<E>): this {
     this.errorFilter = condition;
     return this;
   }
 
-  /**
-   * Configure the number of tries the ResiliencePolicy would
-   * make to recover the current service.
-   *
-   * @param count number of retries
-   * @returns ResiliencePolicy
-   */
-  whitRetries(count: number) {
+  withRetries(count: number): this {
     this.retries = count;
     return this;
   }
 
-  /**
-   * A method to call a method of the original service
-   * passed on the composition
-   *
-   * @param action function to access the origial service
-   * @returns void
-   */
-  async execute(action: (service: T) => Promise<any>) {
-    let lastError: Error;
+  withDelay(ms: number): this {
+    this.delay = ms;
+    return this;
+  }
+
+  async execute<R>(action: AsyncFn<T, R>): Promise<Result<R, E>> {
+    let lastError: E | null = null;
 
     for (let i = 0; i <= this.retries; i++) {
-      const actionResult = await TryCatch.run(
-        async () => await action(this.service as T),
+      const result = await TryCatch.run<R, E>(() => action(this.service));
+
+      if (result.isOk()) {
+        return result;
+      }
+
+      let error = (result as unknown as Failure<E>).error;
+      lastError = error;
+
+      const shouldRecover =
+        this.recoveryLogic && this.errorFilter(error) && i < this.retries;
+
+      if (!shouldRecover) break;
+
+      Logger.internal(
+        `[Resilience] Retry ${i + 1} failed. Attempting recovery...`,
       );
 
-      // if the try is success then we stop trying
-      // by returning the result
-      if (actionResult.isSuccess()) {
-        return actionResult.value;
+      const recovered = await this.recoveryLogic!();
+
+      if (!recovered) {
+        return Result.err(error);
       }
 
-      lastError = actionResult.error;
-
-      const isRecoverable = this.errorFilter(lastError);
-
-      if (this.recoveryLogic && isRecoverable && i < this.retries) {
-        Logger.internal(
-          `[Resilience] Intento ${i + 1} fallido. Ejecutando recuperación...`,
-        );
-
-        const recovered = await this.recoveryLogic();
-
-        if (!recovered) {
-          throw new Error("Recovery Logic Failed to restore service");
-        }
-
-        // wait a bit to try again.
-        await new Promise((res) => setTimeout(res, 500 * i));
-        continue;
-      } else {
-        break;
-      }
+      await this.sleep(this.delay * (i + 1));
     }
 
-    // if we can't recover the service
-    // we trhow the error :/
-    throw lastError;
+    return Result.err(lastError as E);
+  }
+
+  private sleep(ms: number) {
+    return new Promise((res) => setTimeout(res, ms));
   }
 }

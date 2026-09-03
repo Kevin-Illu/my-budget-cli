@@ -16,7 +16,7 @@ const result = envSchema.safeParse(process.env);
 if (!result.success) {
   const err = z.treeifyError(result.error, (e) => e.message).properties;
   throw new Error(
-    `Invalid Environment Variables:\n${StringModule.prettifyJSON(err)}`,
+    `Invalid Environment Variables:\n${StringModule.prettifyJSON(err as { [key: string]: any })}`,
   );
 }
 

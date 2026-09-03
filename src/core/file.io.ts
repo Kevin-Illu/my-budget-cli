@@ -1,5 +1,5 @@
 import { appendFile } from "node:fs/promises";
-import TryCatch from "./result";
+import { TryCatch } from "./result";
 
 /**
  * File Adapter

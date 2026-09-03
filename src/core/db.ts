@@ -1,17 +1,17 @@
-import TryCatch from "../core/result";
+import { TryCatch } from "../core/result";
 import File from "./file.io";
 import Logger from "./logger";
 import { SQL } from "bun";
 import Env from "@budget/config/env";
 
 export default class DB {
-  private _sql: SQL;
+  private _sql!: SQL;
 
   public async init() {
     const result = await TryCatch.run(async () => {
       Logger.info("Initializing database...");
 
-      this._sql = new SQL(Env.env.DATABASE_PATH, {
+      this._sql = new SQL(Env.env!.DATABASE_PATH, {
         adapter: "sqlite",
         strict: true,
         create: true,
@@ -21,10 +21,16 @@ export default class DB {
       Logger.info("The database is initializared");
     });
 
-    if (result.isError()) {
-      Logger.error("Database failed!", result.error);
-      process.exit(1);
-    }
+    result
+      .tapErr((err) => {
+        Logger.error("Database failed!", err.message);
+      })
+      .match({
+        ok: () => {},
+        err: () => {
+          process.exit(1);
+        },
+      });
   }
 
   /**
@@ -99,8 +105,8 @@ export default class DB {
     return scriptText
       .replace(/--.*$/gm, "")
       .split(";")
-      .map((query) => query.trim())
-      .filter((query) => query.length > 0);
+      .map((query: string) => query.trim())
+      .filter((query: string) => query.length > 0);
   }
 
   /**

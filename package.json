@@ -9,6 +9,7 @@
     "test:unit": "bun test --testPathPattern=unit --env-file=.env.test"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@types/node": "^22.19.3",
     "@typescript-eslint/eslint-plugin": "^8.49.0",
     "@typescript-eslint/parser": "^8.49.0",
@@ -17,8 +18,7 @@
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin": "^1.0.1",
     "prettier": "^3.7.4",
-    "typescript": "^5.9.3",
-    "@types/bun": "latest"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "zod": "^4.2.1"

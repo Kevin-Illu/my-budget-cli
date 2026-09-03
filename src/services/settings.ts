@@ -1,34 +1,42 @@
 import z from "zod";
-import Logger from "./logger";
 import { appconfig, TSettings } from "../config/app";
 import File from "../core/file.io";
-import { StringModule } from "../utils/string";
+import Logger from "@budget/core/logger";
+import Env from "@budget/config/env";
+import { StringModule } from "@budget/shared/string";
+import { Failure, Success, TryCatch } from "@budget/core/result";
 
-const { DEFAULT_SETTINGS, FILE_PATHS, SettingsSchema } = appconfig;
+const { DEFAULT_SETTINGS, SettingsSchema } = appconfig;
 
 export class Settings {
-  public settingsfilepath = FILE_PATHS.settingsfilepath;
-  public settings: TSettings;
+  public settingsfilepath = Env.env!.SETTINGS_FILE_PATH;
+  public settings!: TSettings;
 
   async init() {
-    const settings = await File.file(this.settingsfilepath);
+    const openFileResult = await File.file(this.settingsfilepath);
 
-    if (settings.isError()) {
-      Logger.error("Error open the settings file", settings.error);
-    }
+    let settingsFile: Bun.BunFile;
+    let exist = false;
 
-    const settingsFile = settings.value;
-    const exist = await settingsFile.exists();
+    openFileResult.match({
+      ok: async (value) => {
+        settingsFile = value;
+        exist = await value.exists();
+      },
+      err: async (err) => {
+        Logger.error("Error open the settings file", err);
+      },
+    });
 
     if (!exist) {
-      const result = await File.write(
+      const fileOperationResult = await File.write(
         this.settingsfilepath,
         StringModule.prettifyJSON(DEFAULT_SETTINGS),
       );
 
-      if (result.isError()) {
-        Logger.error(`Cannot create the settings file`, result.error);
-        this.settings = DEFAULT_SETTINGS;
+      if (fileOperationResult.isErr()) {
+        const err = fileOperationResult as Failure<Error>;
+        Logger.error(`Cannot create the settings file`, err);
         return;
       }
 
@@ -40,15 +48,19 @@ export class Settings {
 
     const readResult = await TryCatch.run(() => settingsFile.json());
 
-    if (readResult.isError()) {
-      Logger.error("Failed to read settings file", readResult.error, {
-        context: readResult.error.stack,
+    if (readResult.isErr()) {
+      const err = readResult as Failure<Error>;
+      Logger.error("Failed to read settings file", err.error, {
+        context: err.error.stack,
       });
       this.settings = DEFAULT_SETTINGS;
       return;
     }
 
-    const result = SettingsSchema.safeParse(readResult.value);
+    let result;
+    if (readResult.isOk()) {
+      result = SettingsSchema.safeParse(readResult.value);
+    }
 
     if (!result.success) {
       this.settings = DEFAULT_SETTINGS;

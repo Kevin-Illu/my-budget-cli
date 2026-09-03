@@ -1,101 +1,108 @@
-type Success<T> = { success: true; value: T };
-type Failure<E = Error> = { success: false; error: E };
+export type Success<T> = { success: true; value: T };
+export type Failure<E> = { success: false; error: E };
 
 type ResultType<T, E> = Success<T> | Failure<E>;
 
-export class Result<R, E = Error> {
-  private constructor(private readonly result: ResultType<R, E>) {}
+export class Result<T, E = Error> {
+  private constructor(private readonly result: ResultType<T, E>) {}
 
   static ok<T>(value: T): Result<T, never> {
-    return new Result<T, never>({ success: true, value });
+    return new Result({ success: true, value });
   }
 
   static err<E>(error: E): Result<never, E> {
-    return new Result<never, E>({ success: false, error });
+    return new Result({ success: false, error });
   }
 
-  private isFailure(result: ResultType<R, E>): result is Failure<E> {
-    return !result.success;
-  }
-
-  get value(): R | undefined {
-    return this.result.success ? this.result.value : undefined;
-  }
-
-  get error(): E | undefined {
-    return this.isFailure(this.result) ? this.result.error : undefined;
-  }
-
-  isSuccess(): boolean {
+  isOk(): this is Result<T, E> & { result: Success<T> } {
     return this.result.success;
   }
 
-  isError(): boolean {
+  isErr(): this is Result<T, E> & { result: Failure<E> } {
     return !this.result.success;
   }
 
-  map<U>(fn: (value: R) => U): Result<U, E> {
-    if (this.result.success) {
-      return Result.ok(fn(this.result.value));
-    } else if (this.isFailure(this.result)) {
-      return Result.err<E>(this.result.error);
-    }
-    throw new Error("Unexpected state in map");
+  map<U>(fn: (value: T) => U): Result<U, E> {
+    const res = this.result;
+    if (res.success) return Result.ok(fn(res.value));
+    return Result.err(res.error);
   }
 
-  flatMap<U>(fn: (value: R) => Result<U, E>): Result<U, E> {
-    if (this.result.success) {
-      return fn(this.result.value);
-    } else if (this.isFailure(this.result)) {
-      return Result.err<E>(this.result.error);
-    }
-    throw new Error("Unexpected state in flatMap");
+  mapErr<F>(fn: (error: E) => F): Result<T, F> {
+    const res = this.result;
+    return res.success ? Result.ok(res.value) : Result.err(fn(res.error));
   }
 
-  unwrap(): R {
-    if (this.result.success) {
-      return this.result.value;
-    } else if (this.isFailure(this.result)) {
-      throw new Error(`Called unwrap on an error result: ${this.result.error}`);
-    }
-    throw new Error("Unexpected state in unwrap");
+  flatMap<U>(fn: (value: T) => Result<U, E>): Result<U, E> {
+    const res = this.result;
+    return res.success ? fn(res.value) : Result.err(res.error);
   }
 
-  unwrapOr(defaultValue: R): R {
-    return this.result.success ? this.result.value : defaultValue;
+  async flatMapAsync<U>(
+    fn: (value: T) => Promise<Result<U, E>>,
+  ): Promise<Result<U, E>> {
+    const res = this.result;
+    return res.success ? await fn(res.value) : Result.err(res.error);
   }
 
-  unwrapOrElse(fn: (error: E) => R): R {
-    return this.result.success ? this.result.value : fn(this.getError());
+  tap(fn: (value: T) => void): Result<T, E> {
+    const res = this.result;
+    if (res.success) fn(res.value);
+    return this;
   }
 
-  private getError(): E {
-    if (this.isFailure(this.result)) {
-      return this.result.error;
-    }
-    throw new Error("Called getError on a success result");
+  tapErr(fn: (error: E) => void): Result<T, E> {
+    const res = this.result;
+    if (!res.success) fn(res.error);
+    return this;
+  }
+
+  match<U>(handlers: { ok: (value: T) => U; err: (error: E) => U }): U {
+    const res = this.result;
+    return res.success ? handlers.ok(res.value) : handlers.err(res.error);
+  }
+
+  unwrap(): T {
+    const res = this.result;
+    if (res.success) return res.value;
+    const err = res.error;
+    throw err instanceof Error ? err : new Error(String(err));
+  }
+
+  unwrapOr(defaultValue: T): T {
+    const res = this.result;
+    return res.success ? res.value : defaultValue;
+  }
+
+  unwrapOrElse(fn: (error: E) => T): T {
+    const res = this.result;
+    return res.success ? res.value : fn(res.error);
   }
 }
 
 type MaybePromise<T> = T | Promise<T>;
 
-export default class TryCatch {
-  static runSync<T, E = Error>(fn: () => T): Result<T, E> {
+export class TryCatch {
+  static runSync<T, E = Error>(
+    fn: () => T,
+    mapError?: (e: unknown) => E,
+  ): Result<T, E> {
     try {
       return Result.ok(fn());
     } catch (error) {
-      return Result.err(error as E);
+      return Result.err(mapError ? mapError(error) : (error as E));
     }
   }
 
   static async run<T, E = Error>(
     fn: () => MaybePromise<T>,
+    mapError?: (e: unknown) => E,
   ): Promise<Result<T, E>> {
     try {
       const value = await fn();
       return Result.ok(value);
     } catch (error) {
-      return Result.err(error as E);
+      return Result.err(mapError ? mapError(error) : (error as E));
     }
   }
 }

@@ -1,3 +1,4 @@
+import { Result } from "@budget/core/result";
 import {
   CreateExpenseDTO,
   ExpenseResponseDTO,
@@ -8,19 +9,19 @@ export interface IExpenseRepository {
   /**
    * Find all the expenses saved
    */
-  findAll(): Promise<ExpenseResponseDTO[]>;
+  findAll(): Promise<Result<ExpenseResponseDTO[]>>;
 
   /**
    * Find an especific expense by its ID
    * @param id number
    */
-  findById(id: number): Promise<ExpenseResponseDTO | null>;
+  findById(id: number): Promise<Result<ExpenseResponseDTO | null>>;
 
   /**
    * Save the user expense
    * @param expense ExpenseResponseDTO
    */
-  save(expense: CreateExpenseDTO): Promise<ExpenseResponseDTO>;
+  save(expense: CreateExpenseDTO): Promise<Result<ExpenseResponseDTO>>;
 
   /**
    * Update an especific expense
@@ -28,11 +29,14 @@ export interface IExpenseRepository {
    * @param id number
    * @param data UpdateExpenseDTO
    */
-  update(id: number, data: UpdateExpenseDTO): Promise<ExpenseResponseDTO>;
+  update(
+    id: number,
+    data: UpdateExpenseDTO,
+  ): Promise<Result<ExpenseResponseDTO>>;
 
   /**
    * Delete an especific expense
    * @param id number
    */
-  delete(id: number): Promise<void>;
+  delete(id: number): Promise<Result<void>>;
 }

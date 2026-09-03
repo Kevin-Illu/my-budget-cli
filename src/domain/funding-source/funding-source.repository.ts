@@ -1,3 +1,4 @@
+import { Result } from "@budget/core/result";
 import {
   CreateFundingSourceDTO,
   FundingSourceResponseDTO,
@@ -8,14 +9,14 @@ export interface IFundingSourceRepository {
   /**
    * Find all the FundingSources saved
    */
-  findAll(): Promise<FundingSourceResponseDTO[]>;
+  findAll(): Promise<Result<FundingSourceResponseDTO[]>>;
 
   /**
    * Find an especific funding source by its ID
    *
    * @param id the id of the funding source
    */
-  findById(id: number): Promise<FundingSourceResponseDTO | null>;
+  findById(id: number): Promise<Result<FundingSourceResponseDTO | null>>;
 
   /**
    * Save the user funding source
@@ -24,7 +25,7 @@ export interface IFundingSourceRepository {
    */
   save(
     fundingSource: CreateFundingSourceDTO,
-  ): Promise<FundingSourceResponseDTO>;
+  ): Promise<Result<FundingSourceResponseDTO>>;
 
   /**
    * Update an especific funding source
@@ -35,12 +36,12 @@ export interface IFundingSourceRepository {
   update(
     id: number,
     data: UpdateFundingSourceDTO,
-  ): Promise<FundingSourceResponseDTO>;
+  ): Promise<Result<FundingSourceResponseDTO>>;
 
   /**
    * Delete an especific funding source.
    *
    * @param id the funding source id
    */
-  delete(id: number): Promise<void>;
+  delete(id: number): Promise<Result<void>>;
 }

@@ -3,6 +3,7 @@ import ServiceLocator from "@budget/core/locator";
 import { TOKENS } from "@budget/core/locator.keys";
 import type { IExpenseRepository } from "@budget/domain/expense/expense.repository";
 import type { TDatabase } from "@budget/types/database.types";
+import { fail } from "assert";
 
 let repo: IExpenseRepository;
 let db: TDatabase;
@@ -28,7 +29,7 @@ const testExpense = (overrides = {}) => ({
 describe("ExpenseRepository (integration)", () => {
   describe("save", () => {
     it("inserts an expense and returns it with an id", async () => {
-      const result = await repo.save(testExpense());
+      const result = (await repo.save(testExpense())).unwrap();
 
       expect(result.id).toBeNumber();
       expect(result.name).toBe("TEST_Groceries");
@@ -41,7 +42,7 @@ describe("ExpenseRepository (integration)", () => {
     });
 
     it("throws on missing name", async () => {
-      expect(repo.save(testExpense({ name: "" }))).rejects.toThrow();
+      expect((await repo.save(testExpense({ name: "" }))).isErr()).toBe(true);
     });
   });
 
@@ -49,14 +50,14 @@ describe("ExpenseRepository (integration)", () => {
     it("returns at least the expense we just inserted", async () => {
       await repo.save(testExpense({ name: "TEST_FindAll" }));
 
-      const results = await repo.findAll();
+      const results = (await repo.findAll()).unwrap();
 
       expect(results.length).toBeGreaterThan(0);
       expect(results.some((e) => e.name === "TEST_FindAll")).toBeTrue();
     });
 
     it("returns expenses with the correct shape", async () => {
-      const results = await repo.findAll();
+      const results = (await repo.findAll()).unwrap();
       const first = results[0];
 
       expect(first).toHaveProperty("id");
@@ -68,9 +69,10 @@ describe("ExpenseRepository (integration)", () => {
 
   describe("findById", () => {
     it("returns the expense when it exists", async () => {
-      const saved = await repo.save(testExpense({ name: "TEST_FindById" }));
-
-      const found = await repo.findById(saved.id);
+      const saved = (
+        await repo.save(testExpense({ name: "TEST_FindById" }))
+      ).unwrap();
+      const found = (await repo.findById(saved.id)).unwrap();
 
       expect(found).not.toBeNull();
       expect(found?.id).toBe(saved.id);
@@ -78,7 +80,7 @@ describe("ExpenseRepository (integration)", () => {
     });
 
     it("returns null for a non-existent id", async () => {
-      const result = await repo.findById(999_999_999);
+      const result = (await repo.findById(999_999_999)).unwrap();
 
       expect(result).toBeNull();
     });
@@ -86,14 +88,16 @@ describe("ExpenseRepository (integration)", () => {
 
   describe("update", () => {
     it("updates name and amountCents", async () => {
-      const saved = await repo.save(
-        testExpense({ name: "TEST_Update_Before" }),
-      );
+      const saved = (
+        await repo.save(testExpense({ name: "TEST_Update_Before" }))
+      ).unwrap();
 
-      const updated = await repo.update(saved.id, {
-        name: "TEST_Update_After",
-        amountCents: 9999,
-      });
+      const updated = (
+        await repo.update(saved.id, {
+          name: "TEST_Update_After",
+          amountCents: 9999,
+        })
+      ).unwrap();
 
       expect(updated.id).toBe(saved.id);
       expect(updated.name).toBe("TEST_Update_After");
@@ -101,47 +105,73 @@ describe("ExpenseRepository (integration)", () => {
     });
 
     it("updates only name when amountCents is omitted", async () => {
-      const saved = await repo.save(
-        testExpense({ name: "TEST_PartialUpdate", amountCents: 1000 }),
-      );
+      const saved = (
+        await repo.save(
+          testExpense({ name: "TEST_PartialUpdate", amountCents: 1000 }),
+        )
+      ).unwrap();
 
-      const updated = await repo.update(saved.id, {
-        name: "TEST_PartialUpdate_Renamed",
-      });
+      const updated = (
+        await repo.update(saved.id, {
+          name: "TEST_PartialUpdate_Renamed",
+        })
+      ).unwrap();
 
       expect(updated.name).toBe("TEST_PartialUpdate_Renamed");
       expect(updated.amountCents).toBe(1000); // unchanged
     });
 
     it("throws when no fields are provided", async () => {
-      const saved = await repo.save(testExpense());
+      const saved = (await repo.save(testExpense())).unwrap();
 
-      expect(repo.update(saved.id, {})).rejects.toThrow(
-        "No fields provided for update",
-      );
+      const result = await repo.update(saved.id, {});
+
+      // No fields provided for update
+      expect(result.isErr()).toBe(true);
+
+      result.match({
+        ok: () => {
+          fail("Expected error");
+        },
+        err: (err) => {
+          expect(err.message).toContain("No fields provided for update");
+        },
+      });
     });
 
     it("throws when the expense does not exist", async () => {
-      expect(repo.update(999_999_999, { name: "TEST_Ghost" })).rejects.toThrow(
-        "Expense with id 999999999 not found",
-      );
+      const result = await repo.update(999_999_999, { name: "TEST_Ghost" });
+
+      result.match({
+        ok: () => fail("Expected error"),
+        err: (err) => {
+          expect(err.message).toContain("Expense with id 999999999 not found");
+        },
+      });
     });
   });
 
   describe("delete", () => {
     it("deletes an existing expense", async () => {
-      const saved = await repo.save(testExpense({ name: "TEST_Delete" }));
+      const saved = (
+        await repo.save(testExpense({ name: "TEST_Delete" }))
+      ).unwrap();
 
       await repo.delete(saved.id);
 
-      const found = await repo.findById(saved.id);
+      const found = (await repo.findById(saved.id)).unwrap();
       expect(found).toBeNull();
     });
 
     it("throws when the expense does not exist", async () => {
-      expect(repo.delete(999_999_999)).rejects.toThrow(
-        "Expense with id 999999999 not found",
-      );
+      const result = await repo.delete(999_999_999);
+
+      result.match({
+        ok: () => fail("Expected error"),
+        err: (err) => {
+          expect(err.message).toContain("Expense with id 999999999 not found");
+        },
+      });
     });
   });
 });
